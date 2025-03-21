@@ -1,0 +1,30 @@
+name: Sync to GitLab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Push to GitLab
+        run: |
+          # Configure Git with credentials
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # Add GitLab as a remote repository
+          git remote add gitlab https://oauth2:${GITLAB_TOKEN}@rendu-git.etna-alternance.net/module-9654/activity-53074/group-1050518
+          
+          # Push to GitLab
+          git push gitlab main:main --force
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
