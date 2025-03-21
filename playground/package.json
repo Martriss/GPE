@@ -1,0 +1,15 @@
+{
+  "name": "three-js-project",
+  "version": "1.0.0",
+  "description": "A Three.js project",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx vite"
+  },
+  "dependencies": {
+    "three": "^0.157.0"
+  },
+  "devDependencies": {
+    "vite": "^6.2.2"
+  }
+}
