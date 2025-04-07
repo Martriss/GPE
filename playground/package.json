@@ -4,12 +4,16 @@
   "description": "A Three.js project",
   "main": "index.js",
   "scripts": {
-    "start": "npx vite"
+    "start": "npx vite",
+    "build": "tsc && vite build",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "three": "^0.157.0"
   },
   "devDependencies": {
+    "@types/three": "^0.175.0",
+    "typescript": "^5.8.3",
     "vite": "^6.2.2"
   }
 }
