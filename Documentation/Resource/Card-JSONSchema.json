@@ -10,6 +10,11 @@
       "type": "integer",
       "minimum": 1
     },
+    "ruleSetId": {
+      "description": "Refers to a rule set id. Expects an uuid",
+      "type": "integer",
+      "minimum": 1
+    },
     "front": {
       "type": "object",
       "properties": {
@@ -20,7 +25,8 @@
         },
         "skin": {
           "description": "The name of file .webp for the card front",
-          "type": "string"
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\.]+$"
         },
         "properties": { // Ce n'est pas possible en JSON Schema, mais lors de l'implementation, s'assurer que dans le tableau propriété chaque objet est un attribut "name" différent
           "type": "array",
@@ -53,7 +59,8 @@
         },
         "skin": {
           "description": "The name of file .webp for the card back",
-          "type": "string"
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\.]+$"
         },
         "properties": { // Ce n'est pas possible en JSON Schema, mais lors de l'implementation, s'assurer que dans le tableau propriété chaque objet est un attribut "name" différent
           "type": "array",
@@ -77,5 +84,5 @@
       "required": [ "cardTypeId", "skin", "properties" ]
     }
   },
-  "required": [ "id", "front" ]
+  "required": [ "id", "ruleSetId", "front" ]
 }
