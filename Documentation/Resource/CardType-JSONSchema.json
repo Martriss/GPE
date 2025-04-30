@@ -12,7 +12,8 @@
     },
     "name": {
       "description": "The name of a card type",
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9 \(\)\'\"\#\[\]]*$"
     },
     "ruleSetId": {
       "description": "Refers to a rule set id. Expects an uuid",
@@ -27,7 +28,8 @@
         "properties": {
           "name": {
             "description": "The name of one property on the card type",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9 \(\)\'\"\#\[\]]*$"
           },
           "acceptableValue": {
             "description": "The acceptable value for the Name. Expects a regex",
