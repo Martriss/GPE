@@ -1,8 +1,7 @@
-import { Renderer } from '../core/Renderer';
-import { Camera } from '../core/Camera';
-import { Scene } from '../core/Scene';
-import { Cube } from '../objects/Cube';
-import { Card } from '../objects/Card';
+import { Renderer } from "../core/Renderer";
+import { Camera } from "../core/Camera";
+import { Scene } from "../core/Scene";
+import { Card } from "../objects/Card";
 
 export class SceneManager {
   private scene: Scene;
@@ -16,18 +15,17 @@ export class SceneManager {
     this.renderer = new Renderer();
 
     // Initialize card
-    this.card = new Card(1, 1.4, 0.01, '', '', this.camera.camera);
+    this.card = new Card(1, 1.4, 0.01, "", "", this.camera.camera);
     this.card.mesh.position.set(0, 0, 0);
     this.scene.add(this.card.mesh);
-
 
     this.setupEventListeners();
     this.renderer.setAnimationLoop(this.animate.bind(this));
   }
 
   private setupEventListeners(): void {
-    window.addEventListener('resize', this.onWindowResize.bind(this));
-    window.addEventListener('dblclick', this.onDoubleClick.bind(this));
+    window.addEventListener("resize", this.onWindowResize.bind(this));
+    window.addEventListener("dblclick", this.onDoubleClick.bind(this));
   }
 
   private onWindowResize(): void {
