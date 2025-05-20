@@ -1,5 +1,12 @@
 import * as THREE from "three";
 
+// Type definition for the drop event callback
+export type CardDropCallback = (
+  card: Card, 
+  worldPosition: THREE.Vector3, 
+  dragStartPosition: THREE.Vector3
+) => void;
+
 export class Card {
   public mesh: THREE.Group;
   private card: THREE.Mesh;
@@ -10,6 +17,8 @@ export class Card {
   private raycaster: THREE.Raycaster = new THREE.Raycaster();
   private mouse: THREE.Vector2 = new THREE.Vector2();
   private camera: THREE.Camera;
+  private onDropCallback: CardDropCallback | null = null;
+  private dragStartPosition: THREE.Vector3 = new THREE.Vector3();
 
   private boundMouseDown!: (event: MouseEvent) => void;
   private boundMouseMove!: (event: MouseEvent) => void;
@@ -210,6 +219,9 @@ export class Card {
     this.bringToFront();
     this.isDragging = true;
     document.body.style.cursor = "grabbing";
+    
+    // Store the starting position for reference when dropped
+    this.dragStartPosition.copy(this.mesh.position);
   }
 
   private updateDragPosition(): void {
@@ -224,8 +236,20 @@ export class Card {
   }
 
   private stopDrag(): void {
-    this.isDragging = false;
-    document.body.style.cursor = "auto";
+    if (this.isDragging) {
+      this.isDragging = false;
+      document.body.style.cursor = "auto";
+      
+      // If we have a callback registered, call it with the current world position
+      if (this.onDropCallback) {
+        // Get the world position by combining the current position with parent transforms
+        const worldPosition = new THREE.Vector3();
+        this.mesh.getWorldPosition(worldPosition);
+        
+        // Execute the callback
+        this.onDropCallback(this, worldPosition, this.dragStartPosition.clone());
+      }
+    }
   }
 
   private onDoubleClick(event: MouseEvent): void {
@@ -303,5 +327,28 @@ export class Card {
 
     // Ensure the Z position persists in future interactions
     this.dragPlane.constant = this.mesh.position.z;
+  }
+  
+  /**
+   * Set callback to be called when card is dropped after dragging
+   */
+  public setDropCallback(callback: CardDropCallback): void {
+    this.onDropCallback = callback;
+  }
+  
+  /**
+   * Check if the card is currently being dragged
+   */
+  public isDraggingCard(): boolean {
+    return this.isDragging;
+  }
+  
+  /**
+   * Get the card's current world position
+   */
+  public getWorldPosition(): THREE.Vector3 {
+    const position = new THREE.Vector3();
+    this.mesh.getWorldPosition(position);
+    return position;
   }
 }

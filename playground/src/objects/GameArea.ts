@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Card } from "./Card";
+import { Card, CardDropCallback } from "./Card";
 
 export class GameArea {
   public mesh: THREE.Group;
@@ -7,16 +7,25 @@ export class GameArea {
   private width: number;
   private height: number;
   private cards: Card[] = [];
+  private camera: THREE.Camera;
+  private onCardAddedCallback: ((card: Card, area: GameArea) => void) | null = null;
+  private onCardRemovedCallback: ((card: Card, area: GameArea) => void) | null = null;
+  private name: string = "GameArea";
 
   constructor(
     width: number = 5,
     height: number = 3,
     position: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
     backgroundColor: THREE.ColorRepresentation = 0x2d572c,
+    camera: THREE.Camera,
+    name: string = "GameArea"
   ) {
     this.width = width;
     this.height = height;
+    this.camera = camera;
+    this.name = name;
     this.mesh = new THREE.Group();
+    this.mesh.name = name;
 
     // Create background geometry
     const geometry = new THREE.PlaneGeometry(width, height);
@@ -29,6 +38,7 @@ export class GameArea {
 
     this.background = new THREE.Mesh(geometry, material);
     this.background.position.copy(position);
+    this.background.name = `${name}-background`;
 
     // Add the background to the group
     this.mesh.add(this.background);
@@ -43,12 +53,17 @@ export class GameArea {
   public addCard(card: Card, x: number = 0, y: number = 0): void {
     // Position the card relative to the center of the area
     card.mesh.position.set(x, y, 0.01); // Slightly above background
-
+    
     // Add the card to our list
     this.cards.push(card);
 
     // Add the card mesh to our group
     this.mesh.add(card.mesh);
+
+    // Trigger the callback if it exists
+    if (this.onCardAddedCallback) {
+      this.onCardAddedCallback(card, this);
+    }
   }
 
   /**
@@ -59,6 +74,12 @@ export class GameArea {
     if (index !== -1) {
       this.cards.splice(index, 1);
       this.mesh.remove(card.mesh);
+      
+      // Trigger the callback if it exists
+      if (this.onCardRemovedCallback) {
+        this.onCardRemovedCallback(card, this);
+      }
+      
       return true;
     }
     return false;
@@ -121,7 +142,7 @@ export class GameArea {
   public resize(width: number, height: number): void {
     this.width = width;
     this.height = height;
-
+    
     // Update geometry
     const newGeometry = new THREE.PlaneGeometry(width, height);
     this.background.geometry.dispose();
@@ -132,9 +153,12 @@ export class GameArea {
    * Check if the given world coordinates are within this game area
    */
   public containsPoint(point: THREE.Vector3): boolean {
-    // Convert world position to local position
-    const localPoint = point.clone().sub(this.mesh.position);
-
+    // Convert world position to local position correctly
+    const worldPoint = point.clone();
+    
+    // Get the local position by converting from world space to local space
+    const localPoint = this.mesh.worldToLocal(worldPoint);
+    
     // Check if the point is within the bounds
     return (
       Math.abs(localPoint.x) <= this.width / 2 &&
@@ -161,5 +185,33 @@ export class GameArea {
 
     // Clear all cards
     this.clearCards();
+  }
+  
+  /**
+   * Set callback for when a card is added to this area
+   */
+  public setOnCardAddedCallback(callback: (card: Card, area: GameArea) => void): void {
+    this.onCardAddedCallback = callback;
+  }
+  
+  /**
+   * Set callback for when a card is removed from this area
+   */
+  public setOnCardRemovedCallback(callback: (card: Card, area: GameArea) => void): void {
+    this.onCardRemovedCallback = callback;
+  }
+  
+  /**
+   * Get the GameArea's name
+   */
+  public getName(): string {
+    return this.name;
+  }
+  
+  /**
+   * Handle a card being dropped after dragging
+   */
+  private handleCardDrop(card: Card, worldPosition: THREE.Vector3, dragStartPosition: THREE.Vector3): void {
+    // This method is not used directly - SceneManager handles the drop coordination between areas
   }
 }
