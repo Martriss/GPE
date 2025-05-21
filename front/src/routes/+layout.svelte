@@ -10,7 +10,20 @@
 
 	const gameActions = [{display: 'Créer une partie', href: '#'}, {display: 'Rejoindre une partie', href: '#'}];
 	const ruleActions = [{display: 'Créer une règle', href: '#'}, {display: 'Trouver un jeu', href: '#'}];
-	const deckActions = [{display: 'Construire un deck', href: '#'}, {display: 'Accéder aux deck', href: '#'}];
+	const deckActions = [
+		{
+			display: 'Construire un deck',
+			href: '/decks/creation'
+		},
+		{
+			display: 'Accéder à mes decks deck',
+			href: '/decks/mes-decks'
+		},
+		{
+			display: 'Accéder aux decks publiques',
+			href: '/decks'
+		}
+	];
 
 	const iconSize = 28;
 </script>
@@ -21,14 +34,14 @@
 		<DropListNav 
 			linkList={gameActions}
 			ariaLabel="Ouvrir la liste déroulante pour créer ou rejoindre une partie"
-			isDisabled
+			disabled
 		>
 			<Swords size={iconSize}/>
 		</DropListNav>
 		<DropListNav
 			linkList={ruleActions}
 			ariaLabel="Ouvrir la liste déroulante pour créer ou trouver une règle de jeu"
-			isDisabled
+			disabled
 		>
 			<BookOpenText size={iconSize}/>
 		</DropListNav>
