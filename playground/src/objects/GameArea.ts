@@ -37,7 +37,6 @@ export class GameArea {
     });
 
     this.background = new THREE.Mesh(geometry, material);
-    this.background.position.copy(position);
     this.background.name = `${name}-background`;
 
     // Add the background to the group
