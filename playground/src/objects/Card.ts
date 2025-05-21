@@ -289,7 +289,17 @@ export class Card {
     animate();
   }
 
-  // Method to bring the card to the front (above other cards)
+  /**
+   * Adjusts the card's position in the 3D scene to ensure it appears in front of other cards.
+   * 
+   * This method calculates the maximum `z` position among sibling objects in the scene
+   * and sets the card's `z` position slightly higher. It also updates the `dragPlane.constant`
+   * to ensure the new position persists during future interactions.
+   * 
+   * Side effects:
+   * - Modifies the card's `z` position.
+   * - Updates the `dragPlane.constant` to match the new `z` position.
+   */
   public bringToFront(): void {
     // Find all other cards in the scene
     if (!this.mesh.parent) return;
