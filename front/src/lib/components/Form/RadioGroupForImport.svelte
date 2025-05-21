@@ -13,10 +13,10 @@
 
 <div class="label">
   <p class="label-text text-sm">{title}</p>
-  <div class="flex flex-wrap justify-between mx-2">
+  <div class="flex flex-wrap justify-between mx-2 gap-1">
     <label class="flex items-center space-x-1 border rounded-md px-2 py-1">
       <input class="radio" type="radio" bind:group={val} value="none"/>
-      <p>Aucun</p>
+      <p>Aucune</p>
     </label>
     <label class="flex items-center space-x-1 border rounded-md px-2 py-1 opacity-50">
       <input class="radio" type="radio" bind:group={val} value="list" disabled/>
@@ -40,7 +40,7 @@
       <p class="text-xs italic">Format (un par ligne): # Nom de la carte</p>
     {/if}
     {#if val === "file"}
-      <InputFileCustom label="Trouve la liste du deck sur ton ordinateur :" name="file" accept=".txt, .csv" />
+      <InputFileCustom label="Trouve la liste du deck sur ton appareil :" name="file" accept=".txt, .csv" />
     {/if}
   </div>
 </div>

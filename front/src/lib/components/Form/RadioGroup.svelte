@@ -16,7 +16,7 @@
 
 <div class="label">
   <p class="label-text text-sm">{title}</p>
-  <div class="flex flex-wrap justify-between mx-2">
+  <div class="flex flex-wrap justify-between mx-2 gap-1">
     {#each checkboxes as { label, value, checked }}
       <InputRadioCustom {name} {label} {checked} {value}/>
     {/each}

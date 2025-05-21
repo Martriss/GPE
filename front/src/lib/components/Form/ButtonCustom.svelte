@@ -6,6 +6,6 @@
   let { name }: ButtonCustomProps = $props();
 </script>
 
-<button type="button" class="btn preset-filled-primary-500">
+<button type="submit" class="btn preset-filled-primary-500">
   {name}
 </button>

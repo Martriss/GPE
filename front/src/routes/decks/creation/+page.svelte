@@ -10,13 +10,13 @@
   const mock = [
     { uuid: "", name: "---- Choisir un jeu de référence -----------"},
     { uuid: "mtg", name: "Magic the Gathering"},
-    { uuid: "wankil", name: "Wankil"},
-    { uuid: "poke", name: "Pokémon"},
-    { uuid: "yu", name: "Yu-Gi-Oh"},
-    { uuid: "one", name: "One Pièce"},
-    { uuid: "lorcana", name: "Lorcana"},
-    { uuid: "star wars", name: "Star Wars"},
-    { uuid: "dragon", name: "Dragon Ball"}
+    // { uuid: "wankil", name: "Wankil"},
+    // { uuid: "poke", name: "Pokémon"},
+    // { uuid: "yu", name: "Yu-Gi-Oh"},
+    // { uuid: "one", name: "One Pièce"},
+    // { uuid: "lorcana", name: "Lorcana"},
+    // { uuid: "star wars", name: "Star Wars"},
+    // { uuid: "dragon", name: "Dragon Ball"}
   ];
 
   const dataVisibility = [
@@ -24,29 +24,27 @@
     { label: "Non répertorié", value: "unlisted" },
     { label: "Public", value: "public" }
   ]
-
-  const colorUsed = "var(--color-primary-800)";
 </script>
 
-<div>
-  <p style:color={colorUsed}>* Champs requis</p>
-  <form method="POST">
+<div class="my-page flex flex-col">
+  <div class="flex justify-center">
+    <h1 class="h1 my-title"> Création d'un nouveau deck</h1>
+  </div>
+  <br />
+  <form method="POST" class="flex flex-col gap-4 my-content">
     <InputTextCustom 
       label="Nom du deck"
       name="name"
-      required
-      colorRequired={colorUsed}
+      
       placeholder="Entrer un nom de deck"
     />
     <SelectCustom
       label="Jeu de référence"
       name="game"
       options={mock}
-      required
-      colorRequired={colorUsed}
     />
     <TextareaCustom 
-      label="Description"
+      label="Description (optionnel)"
       name="description"
       rows={4}
       maxlength={500}
@@ -55,7 +53,40 @@
     <DividerWithText title="Options avancées" />
     <RadioGroup title="Visibilité du deck" name="visibility" checkboxes={dataVisibility}/>
     <RadioGroupForImport title="Importer des cartes à la création ?" />
-    <ButtonCustom name="Créer" />
+    <div class="flex justify-center">
+      <ButtonCustom name="Créer" />
+    </div>
   </form>
 </div>
+
+<style>
   
+  .my-page {
+    margin: 2rem 1rem;
+  }
+  .my-title {
+    margin-bottom: 1rem;
+  }
+
+  @media (width >= 40rem) {
+    /* = sm */
+    .my-content {
+      margin-inline: 5rem;
+    }
+  }
+
+  @media (width >= 48rem) {
+    /* = md  */
+    .my-title {
+      margin-bottom: 2rem;
+      margin-top: 1rem;
+    }
+  }
+  @media (width >= 64rem) { 
+    /* = lg */
+    .my-content {
+      margin-inline: 15rem;
+    }
+
+  }
+</style>

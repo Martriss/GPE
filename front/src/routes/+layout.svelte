@@ -16,11 +16,11 @@
 			href: '/decks/creation'
 		},
 		{
-			display: 'Accéder à mes decks deck',
+			display: 'Accéder à mes decks',
 			href: '/decks/mes-decks'
 		},
 		{
-			display: 'Accéder aux decks publiques',
+			display: 'Accéder aux decks publics',
 			href: '/decks'
 		}
 	];
