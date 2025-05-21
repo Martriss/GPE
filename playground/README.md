@@ -12,7 +12,6 @@ Le module de jeu du Grimoire Infini est développé avec Three.js et TypeScript 
 - Manipulation intuitive des cartes (glisser-déposer)
 - Animation de retournement de carte
 - Adaptation automatique à différentes tailles d'écran
-- Interface réactive fonctionnant sur desktop et appareils tactiles
 
 ## 🛠️ Technologies utilisées
 
