@@ -31,7 +31,7 @@
     <h1 class="h1 my-title"> Création d'un nouveau deck</h1>
   </div>
   <br />
-  <form method="POST" class="flex flex-col gap-4 my-content">
+  <form method="POST" action="?/createDeck" class="flex flex-col gap-4 my-content">
     <InputTextCustom 
       label="Nom du deck"
       name="name"
