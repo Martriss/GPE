@@ -1,4 +1,9 @@
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+import * as rulesetService from '$lib/server/rulesetService';
+
+export const load: PageServerLoad = () => {
+	rulesetService.getAllRulesets();
+};
 
 export const actions = {
 	createDeck: async ({ request }) => {
