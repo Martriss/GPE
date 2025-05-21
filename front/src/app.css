@@ -5,5 +5,8 @@
 @import '@skeletonlabs/skeleton';
 @import '@skeletonlabs/skeleton/optional/presets';
 @import '@skeletonlabs/skeleton/themes/sahara';
+/* @import '@skeletonlabs/skeleton/themes/catppuccin'; */
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @source '../node_modules/@skeletonlabs/skeleton-svelte/dist';
