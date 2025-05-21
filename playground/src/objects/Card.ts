@@ -175,26 +175,8 @@ export class Card {
     if (intersects.length > 0) {
       // We have an intersection with this card, now check if it's the closest
 
-      // To find the closest object, we need to check all objects in the scene
-      // Get the scene object (which should be the root of all objects)
-      let sceneObject: THREE.Object3D = this.mesh;
-      while (sceneObject.parent) {
-        sceneObject = sceneObject.parent;
-      }
-
-      // Get all meshes in the scene
-      const allMeshes: THREE.Mesh[] = [];
-      sceneObject.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          allMeshes.push(object);
-        }
-      });
-
-      // Find all intersections with all meshes
-      const allIntersects = this.raycaster.intersectObjects(allMeshes);
-
-      // If this card's intersection is the first (closest) one
-      if (allIntersects.length > 0 && allIntersects[0].object === this.card) {
+      // Check if this card's intersection is the closest
+      if (intersects.length > 0 && intersects[0].object === this.card) {
         // Calculate the drag plane perpendicular to the camera
         const normal = new THREE.Vector3(0, 0, 1).applyQuaternion(
           this.camera.quaternion,
