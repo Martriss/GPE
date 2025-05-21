@@ -1,5 +1,5 @@
 <script lang="ts">
-    import LabelCustom from "./LabelCustom.svelte";
+  import LabelCustom from "./LabelCustom.svelte";
 
   interface InputTextareaCustomProps {
     label: string;
@@ -24,7 +24,7 @@
     readonly = false,
     colorRequired,
     rows = 2,
-    resize = "none"
+    resize = "none",
   }: InputTextareaCustomProps = $props();
 
   let value: string = $state("");
@@ -34,7 +34,7 @@
 <label class="label">
   <LabelCustom {label} {required} {colorRequired} />
   <textarea
-    name={name}
+    {name}
     bind:value
     class="input"
     style:resize

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import  InputRadioCustom from '$lib/components/Form/InputRadioCustom.svelte';
+  import InputRadioCustom from "$lib/components/Form/InputRadioCustom.svelte";
 
   interface RadioGroupProps {
     title: string;
@@ -7,8 +7,8 @@
     checkboxes: {
       label: string;
       value: string;
-      checked?: boolean
-    }[]
+      checked?: boolean;
+    }[];
   }
 
   let { title, name, checkboxes }: RadioGroupProps = $props();
@@ -18,7 +18,7 @@
   <p class="label-text text-sm">{title}</p>
   <div class="flex flex-wrap justify-between mx-2 gap-1">
     {#each checkboxes as { label, value, checked }}
-      <InputRadioCustom {name} {label} {checked} {value}/>
+      <InputRadioCustom {name} {label} {checked} {value} />
     {/each}
   </div>
 </div>

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { FullAutoFill } from "svelte/elements";
-    import LabelCustom from "./LabelCustom.svelte";
+  import type { FullAutoFill } from "svelte/elements";
+  import LabelCustom from "./LabelCustom.svelte";
 
   interface InputTextCustomProps {
     label: string;
@@ -25,7 +25,7 @@
     required = false,
     readonly = false,
     colorRequired,
-    autocomplete = "off"
+    autocomplete = "off",
   }: InputTextCustomProps = $props();
 </script>
 
@@ -33,7 +33,7 @@
   <LabelCustom {label} {required} {colorRequired} />
   <input
     type="text"
-    name={name}
+    {name}
     class="input"
     {placeholder}
     {pattern}

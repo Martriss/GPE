@@ -1,5 +1,5 @@
 <script lang="ts">
-    import LabelCustom from "./LabelCustom.svelte";
+  import LabelCustom from "./LabelCustom.svelte";
 
   interface SelectCustomProps {
     label: string;
@@ -14,18 +14,20 @@
     size?: number;
   }
 
-  let { label, name, options, disabled, required, colorRequired, size }: SelectCustomProps = $props();
+  let {
+    label,
+    name,
+    options,
+    disabled,
+    required,
+    colorRequired,
+    size,
+  }: SelectCustomProps = $props();
 </script>
 
 <label class="label">
   <LabelCustom {label} {required} {colorRequired} />
-  <select
-    class="select"
-    {name}
-    {required}
-    {disabled}
-    {size}
-  >
+  <select class="select" {name} {required} {disabled} {size}>
     {#each options as { name, uuid }}
       <option value={uuid}>{name}</option>
     {/each}
