@@ -9,7 +9,7 @@
       "description": "The id of a card. Expects an uuid",
       "type": "string"
     },
-    "ruleSetId": {
+    "rulesetId": {
       "description": "Refers to a rule set id. Expects an uuid",
       "type": "string"
     },
@@ -96,7 +96,7 @@
   },
   "required": [
     "id",
-    "ruleSetId",
+    "rulesetId",
     "front"
   ]
 }
