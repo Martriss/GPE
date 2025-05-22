@@ -77,6 +77,8 @@ function transformScryfallCard(scryfallCard) {
 
   // Créer l'objet de carte au format Firestore
   return {
+    name: scryfallCard.name,
+    nameLower: scryfallCard.name.toLowerCase(), // Pour la recherche
     ruleSetId: RULESET_ID, // Référence au ruleset
     front: {
       cardTypeId: 1, // On simplifie en utilisant un seul type pour l'instant
@@ -184,10 +186,9 @@ async function main() {
 
     // Importer les cartes
     await importCards(cardsData);
-    await terminate(db);
+    process.exit(0);
   } catch (error) {
     console.error("Erreur dans le programme principal:", error);
-    await terminate(db);
     process.exit(1);
   }
 }
