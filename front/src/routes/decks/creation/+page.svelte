@@ -7,7 +7,7 @@
   import RadioGroupForImport from "$lib/components/Form/RadioGroupForImport.svelte";
   import ButtonCustom from "$lib/components/Form/ButtonCustom.svelte";
   import type { PageProps } from "./$types";
-  import type RulesetType from "$lib/interface/RulesetType";
+  import type RulesetType from "$lib/interfaces/RulesetType";
 
   let { data }: PageProps = $props();
 

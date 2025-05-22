@@ -1,5 +1,5 @@
 import { firestore } from "$lib/firebase/client";
-import type RulesetType from "$lib/interface/RulesetType";
+import type RulesetType from "$lib/interfaces/RulesetType";
 import { collection, getDocs } from "firebase/firestore";
 
 
