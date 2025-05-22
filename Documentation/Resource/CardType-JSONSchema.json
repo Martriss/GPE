@@ -14,7 +14,7 @@
       "type": "string",
       "pattern": "^[a-zA-Z0-9 \(\)\'\"\#\[\]]*$"
     },
-    "ruleSetId": {
+    "rulesetId": {
       "description": "Refers to a rule set id. Expects an uuid",
       "type": "string"
     },
@@ -51,7 +51,7 @@
   "required": [
     "id",
     "name",
-    "ruleSetId",
+    "rulesetId",
     "properties"
   ]
 }

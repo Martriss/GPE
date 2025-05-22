@@ -30,7 +30,7 @@
       "description": "Refers to a user. Expects an uuid",
       "type": "string"
     },
-    "ruleSetId": {
+    "rulesetId": {
       "description": "Refers to a rule set id. Expects an uuid",
       "type": "string"
     },
@@ -50,7 +50,7 @@
       "name",
       "isPublic",
       "userId",
-      "ruleSetId",
+      "rulesetId",
       "isShared"
     ]
   }
