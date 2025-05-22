@@ -6,18 +6,15 @@
   import DividerWithText from "$lib/components/Divider/DividerWithText.svelte";
   import RadioGroupForImport from "$lib/components/Form/RadioGroupForImport.svelte";
   import ButtonCustom from "$lib/components/Form/ButtonCustom.svelte";
+  import type { PageProps } from "./$types";
+  import type RulesetType from "$lib/interfaces/RulesetType";
 
-  const mock = [
+  let { data }: PageProps = $props();
+
+  let rulesetsSelect: RulesetType[] = $derived([
     { uuid: "", name: "---- Choisir un jeu de référence -----------" },
-    { uuid: "mtg", name: "Magic the Gathering" },
-    // { uuid: "wankil", name: "Wankil"},
-    // { uuid: "poke", name: "Pokémon"},
-    // { uuid: "yu", name: "Yu-Gi-Oh"},
-    // { uuid: "one", name: "One Pièce"},
-    // { uuid: "lorcana", name: "Lorcana"},
-    // { uuid: "star wars", name: "Star Wars"},
-    // { uuid: "dragon", name: "Dragon Ball"}
-  ];
+    ...data.rulesets,
+  ]);
 
   const dataVisibility = [
     { label: "Privé", value: "private", checked: true },
@@ -41,7 +38,11 @@
       name="name"
       placeholder="Entrer un nom de deck"
     />
-    <SelectCustom label="Jeu de référence" name="game" options={mock} />
+    <SelectCustom
+      label="Jeu de référence"
+      name="game"
+      options={rulesetsSelect}
+    />
     <TextareaCustom
       label="Description (optionnel)"
       name="description"
