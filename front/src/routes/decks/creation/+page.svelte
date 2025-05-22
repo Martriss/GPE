@@ -37,11 +37,13 @@
       label="Nom du deck"
       name="name"
       placeholder="Entrer un nom de deck"
+      required
     />
     <SelectCustom
       label="Jeu de référence"
       name="game"
       options={rulesetsSelect}
+      required
     />
     <TextareaCustom
       label="Description (optionnel)"

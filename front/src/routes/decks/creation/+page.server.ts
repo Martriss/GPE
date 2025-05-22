@@ -48,7 +48,13 @@ export const actions = {
 			cards: [] // view later to add cards at the creation time
 		};
 
-		const deckId = await deckService.createUserDeck(deck);
+		let deckId: string = "0";
+		try {
+			deckId = await deckService.createUserDeck(deck);
+		} catch (error) {
+			console.error(error);
+			return fail(500, { message: "Erreur lors de la création du deck. Le deck n'a pas pu être crée", isError: true });
+		}
 		redirect(303, `/decks/${deckId}`);
 	}
 } satisfies Actions;
