@@ -8,7 +8,6 @@ export async function getAllRulesets() {
   let data: RulesetType[] = [];
 
   rulesets.forEach((doc) => {
-    // console.log(`${doc.id} => ${doc.data()}`);
     data.push({
       uuid: doc.id,
       name: doc.data().name

@@ -12,6 +12,6 @@ export const actions = {
 	createDeck: async ({ request }) => {
 		const data = await request.formData();
 		console.log(data);
-		deckService.createUserDeck("nryffHyG50fVL1N9UAxfmIdc7eD2"); // replace later the user uuid
+		deckService.createUserDeck("f2ECMFu1RYXMLEFvrnyFSHnkRth1"); // replace later the user uuid
 	}
 } satisfies Actions;
