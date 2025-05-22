@@ -1,0 +1,17 @@
+{
+  "name": "mtg-cards-import",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "importCards.js",
+  "scripts": {
+    "import": "node importCards.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "firebase": "^10.14.1"
+  },
+  "devDependencies": {}
+}
