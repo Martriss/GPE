@@ -7,8 +7,7 @@
   "properties": {
     "id": {
       "description": "The id of the deck. Expects an uuid",
-      "type": "integer",
-      "minimum": 1
+      "type": "string"
     },
     "name": {
       "description": "The name of the deck",
@@ -29,25 +28,30 @@
     },
     "userId": {
       "description": "Refers to a user. Expects an uuid",
-      "type": "integer",
-      "minimum": 1
+      "type": "string"
     },
     "ruleSetId": {
       "description": "Refers to a rule set id. Expects an uuid",
-      "type": "integer",
-      "minimum": 1
+      "type": "string"
     },
     "cards": {
       "description": "List of cards in the deck",
       "type": "array",
       "items": {
-        "type": "integer"
+        "type": "string"
       }
     },
     "isShared": {
       "description": "To find out if the deck has been shared",
       "type": "boolean"
     },
-    "required": [ "id", "name", "isPublic", "userId", "ruleSetId", "isShared" ]
+    "required": [
+      "id",
+      "name",
+      "isPublic",
+      "userId",
+      "ruleSetId",
+      "isShared"
+    ]
   }
 }

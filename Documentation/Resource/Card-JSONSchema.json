@@ -7,21 +7,18 @@
   "properties": {
     "id": {
       "description": "The id of a card. Expects an uuid",
-      "type": "integer",
-      "minimum": 1
+      "type": "string"
     },
     "ruleSetId": {
       "description": "Refers to a rule set id. Expects an uuid",
-      "type": "integer",
-      "minimum": 1
+      "type": "string"
     },
     "front": {
       "type": "object",
       "properties": {
         "cardTypeId": {
           "description": "Refers to a card type. Expects an uuid",
-          "type": "integer",
-          "minimum": 1
+          "type": "string"
         },
         "skin": {
           "description": "The name of file .webp for the card front",
@@ -42,20 +39,26 @@
                 "type": "string"
               }
             },
-            "required": [ "name", "value" ]
+            "required": [
+              "name",
+              "value"
+            ]
           },
           "uniqueItems": true
         }
       },
-      "required": [ "cardTypeId", "skin", "properties" ]
+      "required": [
+        "cardTypeId",
+        "skin",
+        "properties"
+      ]
     },
     "back": {
       "type": "object",
       "properties": {
         "cardTypeId": {
           "description": "Refers to a card type. Expects an uuid",
-          "type": "integer",
-          "minimum": 1
+          "type": "string"
         },
         "skin": {
           "description": "The name of file .webp for the card back",
@@ -76,13 +79,24 @@
                 "type": "string"
               }
             },
-            "required": [ "name", "value" ]
+            "required": [
+              "name",
+              "value"
+            ]
           },
           "uniqueItems": true
         }
       },
-      "required": [ "cardTypeId", "skin", "properties" ]
+      "required": [
+        "cardTypeId",
+        "skin",
+        "properties"
+      ]
     }
   },
-  "required": [ "id", "ruleSetId", "front" ]
+  "required": [
+    "id",
+    "ruleSetId",
+    "front"
+  ]
 }

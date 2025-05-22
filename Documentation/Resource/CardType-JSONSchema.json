@@ -7,8 +7,7 @@
   "properties": {
     "id": {
       "description": "The id of a card type. Expects an uuid",
-      "type": "integer",
-      "minimum": 1
+      "type": "string"
     },
     "name": {
       "description": "The name of a card type",
@@ -17,8 +16,7 @@
     },
     "ruleSetId": {
       "description": "Refers to a rule set id. Expects an uuid",
-      "type": "integer",
-      "minimum": 1
+      "type": "string"
     },
     "properties": {
       "description": "Properties of a card type",
@@ -40,11 +38,20 @@
             "type": "boolean"
           }
         },
-        "required": [ "name", "acceptableValue", "isOptional" ]
+        "required": [
+          "name",
+          "acceptableValue",
+          "isOptional"
+        ]
       },
       "minItems": 1,
       "uniqueItems": true
     }
   },
-  "required": [ "id", "name", "ruleSetId", "properties" ]
+  "required": [
+    "id",
+    "name",
+    "ruleSetId",
+    "properties"
+  ]
 }
