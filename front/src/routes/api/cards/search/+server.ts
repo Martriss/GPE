@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
-import { searchCardsByName } from "$lib/server/cardService.js";
+import { searchCardsByName } from "$lib/server/service/cardService.js";
 import type { RequestHandler } from "./$types";
 
 export const GET: RequestHandler = async ({ url }) => {

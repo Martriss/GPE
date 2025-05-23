@@ -1,13 +1,13 @@
 <script lang="ts">
+    import type CardType from "$lib/interfaces/CardType";
     import { Search, X } from "@lucide/svelte";
-    import type { SearchableCard } from "$lib/server/cardService.js";
 
     // Props
-    interface Props {
+    interface CardSearchBarProps {
         rulesetId: string;
         placeholder?: string;
         maxResults?: number;
-        onCardSelect?: (card: SearchableCard) => void;
+        onCardSelect?: (card: CardType) => void;
     }
 
     let {
@@ -15,11 +15,11 @@
         placeholder = "Rechercher une carte...",
         maxResults = 8,
         onCardSelect,
-    }: Props = $props();
+    }: CardSearchBarProps = $props();
 
     // State
     let searchTerm = $state("");
-    let results = $state<SearchableCard[]>([]);
+    let results = $state<CardType[]>([]);
     let isLoading = $state(false);
     let showDropdown = $state(false);
     let selectedIndex = $state(-1);
@@ -103,7 +103,7 @@
     });
 
     // Handle card selection
-    function selectCard(card: SearchableCard) {
+    function selectCard(card: CardType) {
         searchTerm = card.name;
         showDropdown = false;
         selectedIndex = -1;
@@ -247,6 +247,7 @@
                                 class="w-10 h-14 bg-surface-200 dark:bg-surface-700 rounded flex-shrink-0 overflow-hidden"
                             >
                                 {#if card.imageUrl}
+                                    <!-- changer par card.front.skin quand l'importation des données sera correct :)  -->
                                     <img
                                         src={card.imageUrl}
                                         alt={card.name}
@@ -266,36 +267,6 @@
                             <div class="flex-1 min-w-0">
                                 <div class="font-medium text-sm truncate">
                                     {card.name}
-                                </div>
-
-                                {#if card.manaCost}
-                                    <div
-                                        class="text-xs text-surface-600 dark:text-surface-300 font-mono mt-0.5"
-                                    >
-                                        {card.manaCost}
-                                    </div>
-                                {/if}
-
-                                <div
-                                    class="text-xs text-surface-500 dark:text-surface-400 truncate mt-0.5"
-                                >
-                                    {card.typeLine}
-                                </div>
-
-                                <div
-                                    class="flex items-center gap-2 text-xs text-surface-400 dark:text-surface-500 mt-1"
-                                >
-                                    <span class="capitalize">{card.rarity}</span
-                                    >
-                                    <span>•</span>
-                                    <span class="uppercase">{card.set}</span>
-
-                                    {#if card.power && card.toughness}
-                                        <span>•</span>
-                                        <span class="font-mono"
-                                            >{card.power}/{card.toughness}</span
-                                        >
-                                    {/if}
                                 </div>
                             </div>
                         </div>

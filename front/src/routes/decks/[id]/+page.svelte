@@ -6,29 +6,33 @@
   import Card from "$lib/components/Cards/Card.svelte";
   import CardSearchBar from "$lib/components/Search/CardSearchBar.svelte";
   import type CardType from "$lib/interfaces/CardType";
-  import type { SearchableCard } from "$lib/server/cardService";
 
   let { data }: PageProps = $props();
   let nbCards: number = $derived(data.deck.cards.length);
-  let cards: any[] = $state([]);
-  let cardCurrent = $state();
+  let cards: CardType[] = $state([]);
+  let cardCurrent: CardType = $state({
+    rulesetId: "",
+    name: "",
+    nameLower: "",
+    front: {
+      cardTypeId: "",
+      skin: "",
+      properties: [],
+    },
+  });
   const addCard = () => {
-    // mettre le lien pour l'ajouter dans firebase aussi
+    if (!cardCurrent.id) {
+      // Do nothing if card is empty
+      return;
+    }
     cards.push(cardCurrent);
+    data.deck.cards.push(cardCurrent.id);
+    // mettre le lien pour l'ajouter dans firebase aussi
   };
 
-  const searchCard = (card: SearchableCard) => {
-    cardCurrent = {
-      name: card.name,
-      front: {
-        skin: card.imageUrl,
-      },
-    };
+  const searchCard = (card: CardType) => {
+    cardCurrent = card;
   };
-
-  // mock link
-  const mockLink =
-    "https://cards.scryfall.io/normal/front/0/7/073a04e9-7c18-469d-ac3b-941eb50a6f01.jpg?1722384767";
 </script>
 
 <div class="my-8 mx-4">
@@ -63,7 +67,6 @@
       >Ajouter</button
     >
   </div>
-  <!-- Ajouter le ici le composant qui ajoute des cartes -->
   <div class="flex flex-wrap gap-2 my-4">
     {#each cards as card}
       <Card name={card.name} front={card.front} />
