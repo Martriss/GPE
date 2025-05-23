@@ -1,5 +1,5 @@
 <script lang="ts">
-    import SearchBar from "$lib/components/SearchBar.svelte";
+    import SearchBar from "$lib/components/Search/CardSearchBar.svelte";
     import type { SearchableCard } from "$lib/server/cardService.js";
 
     const rulesetId = "zhPZBo2kuOXpxdXMuXwk";
