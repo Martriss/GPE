@@ -1,6 +1,6 @@
 import { firestore } from "$lib/firebase/client";
 import type DeckType from "$lib/interfaces/DeckType";
-import { addDoc, collection, doc, getDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export async function createUserDeck(deck: DeckType): Promise<string> {
   const docRef = await addDoc(collection(firestore, "decks"), {
@@ -30,4 +30,13 @@ export async function findDeckById(id: string): Promise<DeckType | null> {
   }
 
   return deck;
+}
+
+export async function updateCardsInDeck(deck: DeckType) {
+  if (!deck.id)
+    throw new Error("id deck must be present");
+
+  await updateDoc(doc(firestore, "decks", deck.id), {
+    cards: deck.cards
+  });
 }
