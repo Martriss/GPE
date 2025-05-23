@@ -232,7 +232,7 @@
                 {#each results as card, index (card.id)}
                     <button
                         onclick={() => selectCard(card)}
-                        class="w-full text-left p-3 hover:variant-soft focus:variant-soft focus:outline-none transition-colors border-b border-surface-200 dark:border-surface-700 last:border-b-0 {selectedIndex ===
+                        class="bg-cyan-50 w-full text-left p-3 hover:variant-soft focus:variant-soft focus:outline-none transition-colors border-b border-surface-200 dark:border-surface-700 last:border-b-0 {selectedIndex ===
                         index
                             ? 'variant-soft'
                             : ''}"

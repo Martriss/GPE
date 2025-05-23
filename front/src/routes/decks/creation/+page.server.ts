@@ -1,12 +1,12 @@
 import type { Actions, PageServerLoad } from './$types';
-import * as rulesetService from '$lib/server/rulesetService';
-import * as deckService from '$lib/server/deckService';
+import { getAllRulesets } from '$lib/server/service/rulesetService';
+import { createUserDeck } from '$lib/server/service/deckService';
 import type DeckType from '$lib/interfaces/DeckType';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
   return {
-    // rulesets: await rulesetService.getAllRulesets()
+    // rulesets: await getAllRulesets()
     rulesets: [{ uuid: 'zhPZBo2kuOXpxdXMuXwk', name: "Magic The Gathering" }] // mock pour le développement afin d'éviter le nombre de lecture
   };
 };
@@ -50,7 +50,7 @@ export const actions = {
 
     let deckId: string = "0";
     try {
-      deckId = await deckService.createUserDeck(deck);
+      deckId = await createUserDeck(deck);
     } catch (error) {
       console.error(error);
       return fail(500, { message: "Erreur lors de la création du deck. Le deck n'a pas pu être crée", isError: true });

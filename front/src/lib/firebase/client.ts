@@ -47,5 +47,5 @@ if (FIREBASE_AUTH_EMAIL && FIREBASE_AUTH_PASSWORD) {
     })
     .catch(error => {
       console.error("Erreur de connexion d'utilisateur anonyme :", error);
-    })
+    });
 }
