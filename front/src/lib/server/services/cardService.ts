@@ -6,9 +6,11 @@ import {
   getDocs,
   orderBy,
   limit,
+  documentId,
 } from "firebase/firestore";
 import { firestore } from "$lib/firebase/client";
 import type CardType from "$lib/interfaces/CardType";
+import { getOccurrences } from "$lib/utils/counts";
 
 /**
  * Recherche des cartes par préfixe de nom en utilisant le champ nameLower
@@ -52,4 +54,27 @@ export async function searchCardsByName(
     console.error("Erreur lors de la recherche de cartes:", error);
     throw new Error("Impossible de rechercher les cartes");
   }
+}
+
+export async function getCardsById(rulesetId: string, cardsId: string[]) {
+  const myMap: Map<string, number> = getOccurrences(cardsId);
+  const refSort: string[] = cardsId.sort();
+  const chunks = [];
+  while (refSort.length) chunks.push(refSort.splice(0, 10));
+
+  const queries = chunks.map(chunk =>
+    getDocs(query(collection(firestore, `rulesets/${rulesetId}/cards`), where(documentId(), 'in', chunk)))
+  );
+
+  const results = await Promise.all(queries);
+  const data: CardType[] = results.flatMap(r => r.docs.map(doc => ({ id: doc.id, ...doc.data() }))) as CardType[];
+  let res: CardType[] = [];
+  for (let i = 0; i < data.length; i++) {
+    const n: number = myMap.get(data[i].id) as number;
+    for (let j = 0; j < n; j++) {
+      res.push(data[i]);
+    }
+  }
+
+  return res;
 }

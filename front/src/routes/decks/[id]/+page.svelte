@@ -6,10 +6,13 @@
   import Card from "$lib/components/Cards/Card.svelte";
   import CardSearchBar from "$lib/components/Search/CardSearchBar.svelte";
   import type CardType from "$lib/interfaces/CardType";
+  import { sortCardNameAsc } from "$lib/utils/sorts";
 
   let { data }: PageProps = $props();
-  let nbCards: number = $derived(data.deck.cards.length);
-  let cards: CardType[] = $state([]);
+  let nbCards: number = $derived(data.cards.length);
+  let cards: CardType[] = $state(
+    data.cards.sort((a, b) => sortCardNameAsc(a, b)),
+  );
   let cardCurrent: CardType = $state({
     rulesetId: "",
     name: "",
@@ -27,8 +30,30 @@
     }
     cards.push(cardCurrent);
     data.deck.cards.push(cardCurrent.id);
-    // mettre le lien pour l'ajouter dans firebase aussi
+
+    const response = fetch(`/api/decks/${data.deck.id}/cards`, {
+      method: "PUT",
+      body: JSON.stringify(data.deck),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    response
+      .then((r) => {
+        // Permet de revenir en arrière s'il y a eu un problème lors de l'ajout
+        if (!r.ok) {
+          cards.pop();
+          data.deck.cards.pop();
+          // Mettre une notication pour prévenir qu'un problème est arrivé lors de l'ajout
+        }
+      })
+      .catch((err) => {
+        // Traiter le cas d'erreur
+      });
   };
+
+  const removeCard = () => {};
 
   const searchCard = (card: CardType) => {
     cardCurrent = card;
@@ -69,7 +94,7 @@
   </div>
   <div class="flex flex-wrap gap-2 my-4">
     {#each cards as card}
-      <Card name={card.name} front={card.front} />
+      <Card {...card} imageUrl={card.imageUrl} onDelete={removeCard} />
     {/each}
   </div>
 </div>
