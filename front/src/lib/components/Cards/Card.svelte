@@ -2,12 +2,13 @@
   import type CardType from "$lib/interfaces/CardType";
   import X from "@lucide/svelte/icons/x";
 
-  interface CardProps extends CardType {
-    imageUrl: string;
-    onDelete?: () => void;
+  interface CardProps {
+    card: CardType;
+    imageUrl: string; // A enlever quand l'image sera correctement au bon endroit (front.skin)
+    onDelete?: (e: Event) => void;
   }
 
-  let { name, front, imageUrl, onDelete }: CardProps = $props();
+  let { card, imageUrl, onDelete }: CardProps = $props();
 </script>
 
 <div class="flex flex-col">
@@ -15,6 +16,7 @@
     <div class="flex justify-end relative top-6 left-3">
       <button
         aria-label="supprimer"
+        data-card={JSON.stringify(card)}
         onclick={onDelete}
         class="bg-primary-500 rounded-full p-1"
       >
@@ -22,7 +24,7 @@
       </button>
     </div>
   {/if}
-  <img alt={`image de la carte ${name}`} src={imageUrl} />
+  <img alt={`image de la carte ${card.name}`} src={imageUrl} />
 </div>
 
 <style>
@@ -31,19 +33,5 @@
     height: 20.81rem;
     width: auto;
     border-radius: 15px;
-  }
-
-  .bg-primary-500 {
-    background-color: var(--color-primary-500);
-  }
-
-  .custom-button {
-    /* background-color: var(--body-background-color); */
-    /* background-color: rgb(255, 134, 134); */
-    border-top-right-radius: 13px;
-    width: 24px;
-    height: 24px;
-    /* clip-path: polygon(100% 0%, 100% 100%, 0% 0%); */
-    padding: 1.5rem;
   }
 </style>

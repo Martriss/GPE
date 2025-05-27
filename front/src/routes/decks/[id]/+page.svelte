@@ -9,10 +9,10 @@
   import { sortCardNameAsc } from "$lib/utils/sorts";
 
   let { data }: PageProps = $props();
-  let nbCards: number = $derived(data.cards.length);
   let cards: CardType[] = $state(
     data.cards.sort((a, b) => sortCardNameAsc(a, b)),
   );
+  let nbCards: number = $derived(cards.length);
   let cardCurrent: CardType = $state({
     rulesetId: "",
     name: "",
@@ -23,12 +23,14 @@
       properties: [],
     },
   });
+
   const addCard = () => {
     if (!cardCurrent.id) {
       // Do nothing if card is empty
       return;
     }
     cards.push(cardCurrent);
+    cards.sort((a, b) => sortCardNameAsc(a, b));
     data.deck.cards.push(cardCurrent.id);
 
     const response = fetch(`/api/decks/${data.deck.id}/cards`, {
@@ -53,7 +55,44 @@
       });
   };
 
-  const removeCard = () => {};
+  const removeCard = (e: Event) => {
+    const target = e.currentTarget as HTMLButtonElement;
+    const dataCard = target.dataset.card;
+    if (!dataCard) {
+      // Do nothing
+      return;
+    }
+    const targetCard = JSON.parse(dataCard);
+
+    let i = cards.findIndex((card) => card.id === targetCard.id);
+    cards.splice(i, 1);
+
+    i = data.deck.cards.findIndex((cardId) => cardId === targetCard.id);
+    data.deck.cards.splice(i, 1);
+
+    const response = fetch(`/api/decks/${data.deck.id}/cards`, {
+      method: "PUT",
+      body: JSON.stringify(data.deck),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    response
+      .then((r) => {
+        // Permet de revenir en arrière s'il y a eu un problème lors de la suppression
+        if (!r.ok) {
+          console.log("Je rentre aussi ici ?");
+          cards.push(targetCard);
+          cards.sort((a, b) => sortCardNameAsc(a, b));
+          data.deck.cards.push(targetCard.id);
+          // Mettre une notication pour prévenir qu'un problème est arrivé lors de la suppression
+        }
+      })
+      .catch((err) => {
+        // Traiter le cas d'erreur
+      });
+  };
 
   const searchCard = (card: CardType) => {
     cardCurrent = card;
@@ -93,8 +132,8 @@
     >
   </div>
   <div class="flex flex-wrap gap-2 my-4">
-    {#each cards as card}
-      <Card {...card} imageUrl={card.imageUrl} onDelete={removeCard} />
+    {#each cards as card (card.id)}
+      <Card {card} imageUrl={card.imageUrl} onDelete={removeCard} />
     {/each}
   </div>
 </div>
