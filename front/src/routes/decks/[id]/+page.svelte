@@ -70,14 +70,14 @@
     <p>Jeu : <span class="italic">{data.rulesetName}</span></p>
   </div>
   <div class="flex gap-4 mb-2">
-    <button disabled>
+    <button disabled aria-label="réglage">
       <Settings />
     </button>
-    <button disabled>
+    <button disabled aria-label="copier">
       <Copy />
     </button>
     {#if data.deck.isShared || data.deck.isPublic}
-      <button disabled>
+      <button disabled aria-label="partager">
         <Share2 />
       </button>
     {/if}
