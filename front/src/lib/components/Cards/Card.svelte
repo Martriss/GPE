@@ -12,16 +12,14 @@
 
 <div class="flex flex-col">
   {#if onDelete}
-    <div class="flex justify-end relative top-12">
-      <div class="custom-button flex justify-start items-end">
-        <button
-          onclick={onDelete}
-          color="var(--base-font-color)"
-          class="opacity-50"
-        >
-          <X width="16" />
-        </button>
-      </div>
+    <div class="flex justify-end relative top-6 left-3">
+      <button
+        aria-label="supprimer"
+        onclick={onDelete}
+        class="bg-primary-500 rounded-full p-1"
+      >
+        <X width="16" />
+      </button>
     </div>
   {/if}
   <img alt={`image de la carte ${name}`} src={imageUrl} />
@@ -33,6 +31,10 @@
     height: 20.81rem;
     width: auto;
     border-radius: 15px;
+  }
+
+  .bg-primary-500 {
+    background-color: var(--color-primary-500);
   }
 
   .custom-button {
