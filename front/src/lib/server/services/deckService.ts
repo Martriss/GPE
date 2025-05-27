@@ -11,7 +11,12 @@ export async function createUserDeck(deck: DeckType): Promise<string> {
 }
 
 export async function findDeckById(id: string): Promise<DeckType | null> {
-  const docSnap = await getDoc(doc(firestore, "decks", id));
+  let docSnap;
+  try {
+    docSnap = await getDoc(doc(firestore, "decks", id));
+  } catch (error) {
+    throw new Error("failure to access to firestore"); // Si l'on rentre ici c'est probablement que l'utilisateur n'a pas accès au deck. En renvoyant une erreur, permet de mieux controller la valeur de retour derrière. (exemple : renvoyer une 404 afin d'éviter de donner trop d'information)
+  }
 
   if (!docSnap.exists())
     return null;
