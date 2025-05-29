@@ -5,7 +5,7 @@
   import RadioGroup from "$lib/components/Form/RadioGroup.svelte";
   import DividerWithText from "$lib/components/Divider/DividerWithText.svelte";
   import RadioGroupForImport from "$lib/components/Form/RadioGroupForImport.svelte";
-  import ButtonCustom from "$lib/components/Form/ButtonCustom.svelte";
+  import ButtonSubmitCustom from "$lib/components/Form/ButtonSubmitCustom.svelte";
   import type { PageProps } from "./$types";
   import type RulesetType from "$lib/interfaces/RulesetType";
 
@@ -60,7 +60,7 @@
     />
     <RadioGroupForImport title="Importer des cartes à la création ?" />
     <div class="flex justify-center">
-      <ButtonCustom name="Créer" />
+      <ButtonSubmitCustom name="Créer" />
     </div>
   </form>
 </div>

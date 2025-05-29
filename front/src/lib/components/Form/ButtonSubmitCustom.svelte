@@ -1,9 +1,9 @@
 <script lang="ts">
-  interface ButtonCustomProps {
+  interface ButtonSubmitCustomProps {
     name: string;
   }
 
-  let { name }: ButtonCustomProps = $props();
+  let { name }: ButtonSubmitCustomProps = $props();
 </script>
 
 <button type="submit" class="btn preset-filled-primary-500">

@@ -7,6 +7,7 @@
   import CardSearchBar from "$lib/components/Search/CardSearchBar.svelte";
   import type CardType from "$lib/interfaces/CardType";
   import { sortCardNameAsc } from "$lib/utils/sorts";
+  import ButtonFilled from "$lib/components/Button/ButtonFilled.svelte";
 
   let { data }: PageProps = $props();
   let cards: CardType[] = $state(
@@ -24,7 +25,7 @@
     },
   });
 
-  const addCard = () => {
+  const addCard = (e: Event): void => {
     if (!cardCurrent.id) {
       // Do nothing if card is empty
       return;
@@ -125,14 +126,12 @@
     <button disabled>Importer des cartes</button>
     <button disabled>Exporter les cartes</button>
   </div>
-  <div class="my-4 flex gap-2">
+  <div class="my-4 flex gap-2 max-w-2xl">
     <CardSearchBar rulesetId={data.deck.rulesetId} onCardSelect={searchCard} />
-    <button onclick={addCard} class="btn preset-filled-primary-500"
-      >Ajouter</button
-    >
+    <ButtonFilled name="Ajouter" handleClick={addCard} />
   </div>
   <div class="flex flex-wrap gap-2 my-4">
-    {#each cards as card (card.id)}
+    {#each cards as card, i (i)}
       <Card {card} imageUrl={card.imageUrl} onDelete={removeCard} />
     {/each}
   </div>

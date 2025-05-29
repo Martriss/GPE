@@ -37,6 +37,10 @@ export async function findDeckById(id: string): Promise<DeckType | null> {
   return deck;
 }
 
+export async function getDecksByUser(user_id: string): Promise<DeckType | null> {
+
+}
+
 export async function updateCardsInDeck(deck: DeckType) {
   if (!deck.id)
     throw new Error("id deck must be present");
