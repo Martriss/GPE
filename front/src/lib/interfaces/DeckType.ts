@@ -8,3 +8,8 @@ export default interface DeckType {
   rulesetId: string; // Refer to a ruleset, expect an id like an uuid
   cards: string[];
 }
+
+export interface DecksByGame {
+  gameName: string
+  decks: DeckType[]
+}
