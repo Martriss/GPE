@@ -56,7 +56,13 @@ export async function searchCardsByName(
   }
 }
 
-export async function getCardsById(rulesetId: string, cardsId: string[]) {
+/**
+ * Pour obtenir les cartes d'un ruleset via leur id
+ * @param rulesetId l'id du ruleset. Attend une string
+ * @param cardsId les ids dont on veut les cartes. Attend un tableau de string
+ * @returns un tableau avec les cartes trouvés
+ */
+export async function getCardsById(rulesetId: string, cardsId: string[]): Promise<CardType[]> {
   const myMap: Map<string, number> = getOccurrences(cardsId);
   const refSort: string[] = cardsId.sort();
   const chunks = [];

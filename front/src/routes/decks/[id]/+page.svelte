@@ -83,7 +83,6 @@
       .then((r) => {
         // Permet de revenir en arrière s'il y a eu un problème lors de la suppression
         if (!r.ok) {
-          console.log("Je rentre aussi ici ?");
           cards.push(targetCard);
           cards.sort((a, b) => sortCardNameAsc(a, b));
           data.deck.cards.push(targetCard.id);
