@@ -2,6 +2,7 @@
   import type DeckType from "$lib/interfaces/DeckType";
   import Ellipsis from "@lucide/svelte/icons/ellipsis";
   import Deck from "./Deck.svelte";
+  import ConfirmModal from "../Modal/ConfirmModal.svelte";
 
   interface SummaryDeckProps {
     gameName: string;
@@ -14,17 +15,44 @@
   let currentDecks: DeckType[] = $state(decks);
   let nbDecks: number = $derived(currentDecks.length);
 
+  let currentDeck: DeckType | null = $state(null);
+
+  // svelte-ignore non_reactive_update
+  let dialogModalDelete: HTMLDialogElement;
+
+  const handleOpenDialog = () => {
+    dialogModalDelete.showModal();
+  };
+  const handleCloseDialog = () => {
+    dialogModalDelete.close();
+    currentDeck = null;
+  };
+
   const handleDelete = (e: Event) => {
     const target = e.currentTarget as HTMLButtonElement;
     const dataDeck = target.dataset.deck;
-    if (!dataDeck) return; // Do nothing
+    if (!dataDeck) return; // Do nothing // Une notif comme quoi il y a une erreur pourrait être pas mal
 
-    const targetDeck = JSON.parse(dataDeck);
+    currentDeck = JSON.parse(dataDeck);
+
+    handleOpenDialog();
+  };
+
+  const handleTrue = () => {
+    if (!currentDeck) {
+      // rajouter une notification pour signaler qu'un problème est survenu et donc que la suppression ne passera pas
+      handleCloseDialog();
+      return;
+    }
+    const targetDeck: DeckType = currentDeck;
 
     let i = currentDecks.findIndex((deck) => deck.id === targetDeck.id);
     currentDecks.splice(i, 1);
     i = decks.findIndex((deck) => deck.id === targetDeck.id);
     decks.splice(i, 1);
+
+    currentDeck = null;
+    handleCloseDialog();
 
     const response = fetch(`/api/decks/${targetDeck.id}`, {
       method: "DELETE",
@@ -61,4 +89,11 @@
       <Deck {deck} onDelete={handleDelete} />
     {/each}
   </div>
+  <ConfirmModal
+    bind:dialogRef={dialogModalDelete}
+    title="Attention la suppression est définitive"
+    question="Confirmez-vous la suppression définitive de votre deck ?"
+    onCloseTrue={handleTrue}
+    onCloseFalse={handleCloseDialog}
+  />
 </div>

@@ -8,6 +8,11 @@
   let { name, handleClick, disabled }: ButtonFilledProps = $props();
 </script>
 
-<button onclick={handleClick} class="btn preset-filled-primary-500" {disabled}>
+<button
+  type="button"
+  onclick={handleClick}
+  class="btn preset-filled-primary-500"
+  {disabled}
+>
   {name}
 </button>
