@@ -27,7 +27,6 @@
   <!-- Mettre les boutons, accéder aux decks publics ou créer un deck ? -->
   <!-- Mettre la barre de recherche pour chercher dans ses decks, avec l'option de filtrer par jeu -->
   <div class="flex gap-8 sm:gap-12 md:gap-16 flex-col mx-2">
-    <!-- Quand il y aura plusieurs jeux, vérifier que l'écart est suffisant, pas trop grand, etc. -->
     {#each data.userDecksByGame as decksByGame}
       <SummaryDecks {...decksByGame} />
     {/each}

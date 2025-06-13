@@ -6,6 +6,7 @@
   import Share2 from "@lucide/svelte/icons/share-2";
   import Eye from "@lucide/svelte/icons/eye";
   import { goto } from "$app/navigation";
+  import CopyClipboardModal from "../Modal/CopyClipboardModal.svelte";
 
   interface DeckProps {
     deck: DeckType;
@@ -14,11 +15,23 @@
 
   let { deck, onDelete }: DeckProps = $props();
 
+  // svelte-ignore non_reactive_update
+  let dialogModalShare: HTMLDialogElement;
+
+  const handleOpenDialog = () => {
+    dialogModalShare.showModal();
+  };
+  const handleCloseDialog = () => {
+    dialogModalShare.close();
+  };
+
   const handleUpdate = () => {
     goto(`/decks/${deck.id}`);
   };
 
-  const handleShare = () => {};
+  const handleShare = () => {
+    handleOpenDialog();
+  };
 </script>
 
 <div class="flex border rounded-lg py-2 px-2 justify-between">
@@ -28,7 +41,9 @@
     <!-- Mettre une taille minimum pour la description à mon avis -->
   </div>
   <div class="flex gap-2">
-    <span class="vr border-l-2 border-color-custom"></span>
+    <span
+      class="vr border-l-2 border-(--base-font-color) dark:border-(--base-font-color-dark)"
+    ></span>
     <button
       type="button"
       aria-label={onDelete ? "modifier" : "voir"}
@@ -54,14 +69,14 @@
     <button type="button" aria-label="duppliquer" disabled>
       <Copy />
     </button>
-    <button type="button" aria-label="partager" disabled>
+    <button type="button" aria-label="partager" onclick={handleShare}>
       <Share2 />
     </button>
   </div>
+  <CopyClipboardModal
+    bind:dialogRef={dialogModalShare}
+    onClose={handleCloseDialog}
+    title="Partager le deck"
+    valueToCopy={`${window.location.host}/decks/${deck.id}`}
+  />
 </div>
-
-<style>
-  .border-color-custom {
-    border-color: var(--base-font-color);
-  }
-</style>
