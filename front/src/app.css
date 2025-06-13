@@ -10,3 +10,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @source '../node_modules/@skeletonlabs/skeleton-svelte/dist';
+
+.absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
