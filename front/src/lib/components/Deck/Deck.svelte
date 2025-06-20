@@ -7,6 +7,7 @@
   import Eye from "@lucide/svelte/icons/eye";
   import { goto } from "$app/navigation";
   import CopyClipboardModal from "../Modal/CopyClipboardModal.svelte";
+  import { page } from "$app/state";
 
   interface DeckProps {
     deck: DeckType;
@@ -17,6 +18,10 @@
 
   // svelte-ignore non_reactive_update
   let dialogModalShare: HTMLDialogElement;
+
+  const host: string = page.url.host;
+
+  const isShareable: boolean = deck.isPublic || deck.isShared ? true : false;
 
   const handleOpenDialog = () => {
     dialogModalShare.showModal();
@@ -69,7 +74,12 @@
     <button type="button" aria-label="duppliquer" disabled>
       <Copy />
     </button>
-    <button type="button" aria-label="partager" onclick={handleShare}>
+    <button
+      type="button"
+      aria-label="partager"
+      onclick={handleShare}
+      disabled={!isShareable}
+    >
       <Share2 />
     </button>
   </div>
@@ -77,6 +87,6 @@
     bind:dialogRef={dialogModalShare}
     onClose={handleCloseDialog}
     title="Partager le deck"
-    valueToCopy={`${window.location.host}/decks/${deck.id}`}
+    valueToCopy={`${host}/decks/${deck.id}`}
   />
 </div>
