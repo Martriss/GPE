@@ -37,22 +37,22 @@
         readonly
         aria-label="élément prêt à être copier"
       />
-      <ButtonFilled name="Copier" handleClick={handleCopy} />
-      <!-- <Tooltip
-      open={openState}
-      onOpenChange={(e) => (openState = e.open)}
-      positioning={{ placement: "top" }}
-      triggerBase="underline"
-      contentBase="card preset-filled p-4"
-      openDelay={200}
-      arrow
+      <!-- <ButtonFilled name="Copier" handleClick={handleCopy} /> -->
+      <Tooltip
+        open={openState}
+        onOpenChange={(e) => (openState = e.open)}
+        positioning={{ placement: "top" }}
+        triggerBase="underline"
+        contentBase="card preset-filled p-4"
+        openDelay={200}
+        arrow
       >
-      {#snippet trigger()}<ButtonFilled
-      name="Copier"
-          handleClick={handleCopy}
+        {#snippet trigger()}<ButtonFilled
+            name="Copier"
+            handleClick={handleCopy}
           />{/snippet}
-          {#snippet content()}Copier dans le presse papier{/snippet}
-          </Tooltip> -->
+        {#snippet content()}Copier dans le presse papier{/snippet}
+      </Tooltip>
     </div>
   </div>
 </Modal>

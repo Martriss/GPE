@@ -26,6 +26,7 @@
 
     // Refs
     let searchInput: HTMLInputElement;
+    // svelte-ignore non_reactive_update
     let dropdownRef: HTMLDivElement;
     let debounceTimer: ReturnType<typeof setTimeout>;
 
