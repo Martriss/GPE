@@ -1,13 +1,14 @@
 import type { Actions, PageServerLoad } from './$types';
-import { getAllRulesets } from '$lib/server/service/rulesetService';
-import { createUserDeck } from '$lib/server/service/deckService';
+import { getAllRulesets } from '$lib/server/services/rulesetService';
+import { createUserDeck } from '$lib/server/services/deckService';
 import type DeckType from '$lib/interfaces/DeckType';
 import { fail, redirect } from '@sveltejs/kit';
+import { PUBLIC_USER_FIREBASE } from '$env/static/public';
 
 export const load: PageServerLoad = async () => {
   return {
-    // rulesets: await getAllRulesets()
-    rulesets: [{ uuid: 'zhPZBo2kuOXpxdXMuXwk', name: "Magic The Gathering" }] // mock pour le développement afin d'éviter le nombre de lecture
+    rulesets: await getAllRulesets()
+    // rulesets: [{ uuid: 'zhPZBo2kuOXpxdXMuXwk', name: "Magic The Gathering" }] // mock pour le développement afin d'éviter le nombre de lecture
   };
 };
 
@@ -43,7 +44,7 @@ export const actions = {
       description: data.get("description")?.toString(),
       isPublic,
       isShared,
-      userId: "f2ECMFu1RYXMLEFvrnyFSHnkRth1", // replace later the user uuid,
+      userId: PUBLIC_USER_FIREBASE, // replace later the user uuid,
       rulesetId: game,
       cards: [] // view later to add cards at the creation time
     };

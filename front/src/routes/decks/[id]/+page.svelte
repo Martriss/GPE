@@ -6,29 +6,114 @@
   import Card from "$lib/components/Cards/Card.svelte";
   import CardSearchBar from "$lib/components/Search/CardSearchBar.svelte";
   import type CardType from "$lib/interfaces/CardType";
-  import type { SearchableCard } from "$lib/server/cardService";
+  import { sortCardNameAsc } from "$lib/utils/sorts";
+  import ButtonFilled from "$lib/components/Button/ButtonFilled.svelte";
+  import { page } from "$app/state";
+  import CopyClipboardModal from "$lib/components/Modal/CopyClipboardModal.svelte";
 
   let { data }: PageProps = $props();
-  let nbCards: number = $derived(data.deck.cards.length);
-  let cards: any[] = $state([]);
-  let cardCurrent = $state();
-  const addCard = () => {
-    // mettre le lien pour l'ajouter dans firebase aussi
+  let cards: CardType[] = $state(
+    data.cards.sort((a, b) => sortCardNameAsc(a, b)),
+  );
+  let nbCards: number = $derived(cards.length);
+  let cardCurrent: CardType = $state({
+    rulesetId: "",
+    name: "",
+    nameLower: "",
+    front: {
+      cardTypeId: "",
+      skin: "",
+      properties: [],
+    },
+  });
+
+  const addCard = (e: Event): void => {
+    if (!cardCurrent.id) {
+      // Do nothing if card is empty
+      return;
+    }
     cards.push(cardCurrent);
-  };
+    cards.sort((a, b) => sortCardNameAsc(a, b));
+    data.deck.cards.push(cardCurrent.id);
 
-  const searchCard = (card: SearchableCard) => {
-    cardCurrent = {
-      name: card.name,
-      front: {
-        skin: card.imageUrl,
+    const response = fetch(`/api/decks/${data.deck.id}/cards`, {
+      method: "PUT",
+      body: JSON.stringify(data.deck),
+      headers: {
+        "content-type": "application/json",
       },
-    };
+    });
+
+    response
+      .then((r) => {
+        // Permet de revenir en arrière s'il y a eu un problème lors de l'ajout
+        if (!r.ok) {
+          cards.pop();
+          data.deck.cards.pop();
+          // Mettre une notication pour prévenir qu'un problème est arrivé lors de l'ajout
+        }
+      })
+      .catch((err) => {
+        // Traiter le cas d'erreur
+      });
   };
 
-  // mock link
-  const mockLink =
-    "https://cards.scryfall.io/normal/front/0/7/073a04e9-7c18-469d-ac3b-941eb50a6f01.jpg?1722384767";
+  const removeCard = (e: Event) => {
+    const target = e.currentTarget as HTMLButtonElement;
+    const dataCard = target.dataset.card;
+    if (!dataCard) {
+      // Do nothing
+      return;
+    }
+    const targetCard = JSON.parse(dataCard);
+
+    let i = cards.findIndex((card) => card.id === targetCard.id);
+    cards.splice(i, 1);
+
+    i = data.deck.cards.findIndex((cardId) => cardId === targetCard.id);
+    data.deck.cards.splice(i, 1);
+
+    const response = fetch(`/api/decks/${data.deck.id}/cards`, {
+      method: "PUT",
+      body: JSON.stringify(data.deck),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    response
+      .then((r) => {
+        // Permet de revenir en arrière s'il y a eu un problème lors de la suppression
+        if (!r.ok) {
+          cards.push(targetCard);
+          cards.sort((a, b) => sortCardNameAsc(a, b));
+          data.deck.cards.push(targetCard.id);
+          // Mettre une notication pour prévenir qu'un problème est arrivé lors de la suppression
+        }
+      })
+      .catch((err) => {
+        // Traiter le cas d'erreur
+      });
+  };
+
+  const searchCard = (card: CardType) => {
+    cardCurrent = card;
+  };
+
+  // Partie Partage d'un deck
+  // svelte-ignore non_reactive_update
+  let dialogModalShare: HTMLDialogElement;
+  const host: string = page.url.host;
+  const handleOpenDialogShare = () => {
+    dialogModalShare.showModal();
+  };
+  const handleCloseDialogShare = () => {
+    dialogModalShare.close();
+  };
+
+  const handleShare = () => {
+    handleOpenDialogShare();
+  };
 </script>
 
 <div class="my-8 mx-4">
@@ -41,14 +126,14 @@
     <p>Jeu : <span class="italic">{data.rulesetName}</span></p>
   </div>
   <div class="flex gap-4 mb-2">
-    <button disabled>
+    <button disabled aria-label="réglage">
       <Settings />
     </button>
-    <button disabled>
+    <button disabled aria-label="copier">
       <Copy />
     </button>
     {#if data.deck.isShared || data.deck.isPublic}
-      <button disabled>
+      <button type="button" aria-label="partager" onclick={handleShare}>
         <Share2 />
       </button>
     {/if}
@@ -57,16 +142,19 @@
     <button disabled>Importer des cartes</button>
     <button disabled>Exporter les cartes</button>
   </div>
-  <div class="my-4 flex gap-2">
+  <div class="my-4 flex gap-2 max-w-2xl">
     <CardSearchBar rulesetId={data.deck.rulesetId} onCardSelect={searchCard} />
-    <button onclick={addCard} class="btn preset-filled-primary-500"
-      >Ajouter</button
-    >
+    <ButtonFilled name="Ajouter" handleClick={addCard} />
   </div>
-  <!-- Ajouter le ici le composant qui ajoute des cartes -->
   <div class="flex flex-wrap gap-2 my-4">
-    {#each cards as card}
-      <Card name={card.name} front={card.front} />
+    {#each cards as card, i (i)}
+      <Card {card} imageUrl={card.imageUrl} onDelete={removeCard} />
     {/each}
   </div>
+  <CopyClipboardModal
+    bind:dialogRef={dialogModalShare}
+    onClose={handleCloseDialogShare}
+    title="Partager le deck"
+    valueToCopy={`${host}/decks/${data.deck.id}`}
+  />
 </div>
