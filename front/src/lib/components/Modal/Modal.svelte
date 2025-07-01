@@ -13,7 +13,7 @@
 
 <dialog
   bind:this={dialogRef}
-  class="absolute-center bg-(--body-background-color) dark:bg-(--body-background-color-dark) text-(--base-font-color) dark:text-(--base-font-color-dark) py-4 px-8 rounded-xl min-w-[75vw] w-screen unset-width"
+  class="absolute-center bg-(--body-background-color) dark:bg-(--body-background-color-dark) text-(--base-font-color) dark:text-(--base-font-color-dark) py-4 px-8 rounded-xl min-w-[75vw] w-screen unset-width overflow-clip"
 >
   <button
     type="button"

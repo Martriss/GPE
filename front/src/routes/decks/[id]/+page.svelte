@@ -8,6 +8,8 @@
   import type CardType from "$lib/interfaces/CardType";
   import { sortCardNameAsc } from "$lib/utils/sorts";
   import ButtonFilled from "$lib/components/Button/ButtonFilled.svelte";
+  import { page } from "$app/state";
+  import CopyClipboardModal from "$lib/components/Modal/CopyClipboardModal.svelte";
 
   let { data }: PageProps = $props();
   let cards: CardType[] = $state(
@@ -97,6 +99,21 @@
   const searchCard = (card: CardType) => {
     cardCurrent = card;
   };
+
+  // Partie Partage d'un deck
+  // svelte-ignore non_reactive_update
+  let dialogModalShare: HTMLDialogElement;
+  const host: string = page.url.host;
+  const handleOpenDialogShare = () => {
+    dialogModalShare.showModal();
+  };
+  const handleCloseDialogShare = () => {
+    dialogModalShare.close();
+  };
+
+  const handleShare = () => {
+    handleOpenDialogShare();
+  };
 </script>
 
 <div class="my-8 mx-4">
@@ -116,7 +133,7 @@
       <Copy />
     </button>
     {#if data.deck.isShared || data.deck.isPublic}
-      <button disabled aria-label="partager">
+      <button type="button" aria-label="partager" onclick={handleShare}>
         <Share2 />
       </button>
     {/if}
@@ -134,4 +151,10 @@
       <Card {card} imageUrl={card.imageUrl} onDelete={removeCard} />
     {/each}
   </div>
+  <CopyClipboardModal
+    bind:dialogRef={dialogModalShare}
+    onClose={handleCloseDialogShare}
+    title="Partager le deck"
+    valueToCopy={`${host}/decks/${data.deck.id}`}
+  />
 </div>
