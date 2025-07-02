@@ -5,7 +5,7 @@
 	import Layers from "@lucide/svelte/icons/layers";
 	import UserRound from "@lucide/svelte/icons/user-round";
 	import DropListNav from "$lib/components/DropList/DropListNav.svelte";
-
+	import { currentUser } from "$lib/stores/user";
 	let { children } = $props();
 
 	const gameActions = [
@@ -57,9 +57,13 @@
 		>
 			<Layers size={iconSize} />
 		</DropListNav>
-		<a href="#" aria-label="Aller à la page du profil" class="disabled"
-			><UserRound size={iconSize} /></a
-		>
+		{#if currentUser}
+			<a href="#" aria-label="Aller à la page du profil" class="disabled">
+				<UserRound size={iconSize} />
+			</a>
+		{:else}
+			<a href="/signin">Connexion</a>
+		{/if}
 	</nav>
 </header>
 

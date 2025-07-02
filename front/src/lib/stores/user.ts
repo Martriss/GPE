@@ -9,4 +9,4 @@ export const currentUser: Readable<User | null> = readable<User | null>(null, (s
   })
 
   return () => unsubscribe();
-})
+});

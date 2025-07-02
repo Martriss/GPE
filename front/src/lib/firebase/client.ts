@@ -1,19 +1,19 @@
 // Import the functions you need from the SDKs you need
 import { deleteApp, getApp, getApps, initializeApp, type FirebaseApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, signInAnonymously, signInWithEmailAndPassword, signOut, type UserCredential } from "firebase/auth";
-import { FIREBASE_APIKEY, FIREBASE_AUTHDOMAIN, FIREBASE_PROJECTID, FIREBASE_STORAGEBUCKET, FIREBASE_MESSAGINGSENDERID, FIREBASE_APPID, FIREBASE_AUTH_EMAIL, FIREBASE_AUTH_PASSWORD } from "$env/static/private";
+import { getAuth } from "firebase/auth";
+import { PUBLIC_FIREBASE_APIKEY, PUBLIC_FIREBASE_AUTHDOMAIN, PUBLIC_FIREBASE_PROJECTID, PUBLIC_FIREBASE_STORAGEBUCKET, PUBLIC_FIREBASE_MESSAGINGSENDERID, PUBLIC_FIREBASE_APPID } from "$env/static/public";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: FIREBASE_APIKEY,
-  authDomain: FIREBASE_AUTHDOMAIN,
-  projectId: FIREBASE_PROJECTID,
-  storageBucket: FIREBASE_STORAGEBUCKET,
-  messagingSenderId: FIREBASE_MESSAGINGSENDERID,
-  appId: FIREBASE_APPID
+  apiKey: PUBLIC_FIREBASE_APIKEY,
+  authDomain: PUBLIC_FIREBASE_AUTHDOMAIN,
+  projectId: PUBLIC_FIREBASE_PROJECTID,
+  storageBucket: PUBLIC_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: PUBLIC_FIREBASE_MESSAGINGSENDERID,
+  appId: PUBLIC_FIREBASE_APPID
 };
 
 
