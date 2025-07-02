@@ -1,12 +1,13 @@
 import { auth } from "$lib/firebase/client";
 import { onAuthStateChanged, type User } from "@firebase/auth";
-import { readable, type Readable } from "svelte/store";
+import { readonly, writable, type Writable } from "svelte/store";
 
-export const currentUser: Readable<User | null> = readable<User | null>(null, (set) => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    // console.log(user);
-    set(user);
-  })
-
-  return () => unsubscribe();
+const userStore: Writable<User | null> = writable<User | null>(null);
+onAuthStateChanged(auth, (user) => {
+  userStore.set(user);
 });
+
+export const currentUserStore = readonly(userStore);
+
+// Ce fichier ne sera peut être pas utiliser.
+// Les stores ne sont pas persistant, le moindre rafraichissement de page et tu perds le store
