@@ -3,7 +3,7 @@
   import InputEmailCustom from "$lib/components/Form/InputEmailCustom.svelte";
   import InputPasswordCustom from "$lib/components/Form/InputPasswordCustom.svelte";
   import type { PageProps } from "./$types";
-  import loginPhoto from "$lib/assets/login-photo.webp";
+  import loginPhoto from "$lib/assets/login-picture.webp";
 
   let { form }: PageProps = $props();
 </script>
