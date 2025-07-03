@@ -3,7 +3,6 @@
 	import Swords from "@lucide/svelte/icons/swords";
 	import BookOpenText from "@lucide/svelte/icons/book-open-text";
 	import Layers from "@lucide/svelte/icons/layers";
-	import UserRound from "@lucide/svelte/icons/user-round";
 	import DropListNav from "$lib/components/DropList/DropListNav.svelte";
 	import type { LayoutProps } from "./$types";
 
@@ -59,9 +58,9 @@
 			<Layers size={iconSize} />
 		</DropListNav>
 		{#if data.isConnected}
-			<a href="#" aria-label="Aller à la page du profil" class="disabled">
-				<UserRound size={iconSize} />
-			</a>
+			<form action="/?/logout" method="POST">
+				<button>Déconnexion</button>
+			</form>
 		{:else}
 			<a href="/signin">Connexion</a>
 		{/if}
@@ -69,12 +68,3 @@
 </header>
 
 {@render children()}
-
-<style>
-	a.disabled {
-		pointer-events: none;
-		cursor: default;
-		user-select: none;
-		opacity: 0.5;
-	}
-</style>
