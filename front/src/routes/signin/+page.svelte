@@ -10,7 +10,7 @@
 
 <!-- Attention la hauteur est en "dur", elle prends en compte la navbar mais si demain celle-ci change cela peut avoir des répercussions ici-->
 <div class="flex h-[94vh]">
-  <div class="flex-1 overflow-clip">
+  <div class="flex-1 overflow-clip hidden lg:block">
     <img
       src={loginPhoto}
       alt="Jeu de carte classique. Toutes les cartes sont en noire et blanc, hormis le l'AS de coeur présent au milieu"
@@ -21,14 +21,12 @@
     >
       Photo de Angshu Purkait
     </p>
-    <!-- Photo de <a href="https://unsplash.com/fr/@angshu_purkait?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Angshu Purkait</a> sur <a href="https://unsplash.com/fr/photos/coeur-en-forme-de-coeur-rouge-sur-textile-blanc-et-noir-IU4UKIfPqEQ?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
-       -->
   </div>
   <div class="flex-1 flex flex-col justify-center h-[100%]">
     <div class="flex justify-center mb-16">
       <h1 class="h1">Connexion</h1>
     </div>
-    <form method="POST" class="flex flex-col gap-4 mx-4 px-16">
+    <form method="POST" class="flex flex-col gap-4 mx-4 sm:px-16">
       {#if form?.isMissing || form?.isIncorrect}
         <p class="text-(--color-error-500)">Identifiants incorrects !</p>
       {/if}
