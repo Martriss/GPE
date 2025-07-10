@@ -31,6 +31,7 @@ export const actions = {
     if (!userCurrentId) {
       // Normalement nous ne sommes jamais sensé arrivé dedans, parce que l'utilisateur doit être connecté pour accéder à la page de création
       // Essayer de voir pour afficher un message d'erreur si jamais l'on rentre ici
+      // Voir une redirection ? Error 401 ?
       error(500);
     }
 
@@ -47,7 +48,7 @@ export const actions = {
       description,
       isPublic,
       isShared,
-      userId: userCurrentId || '', // Plus haut il y a une vérification de le cookie ne soit pas vide 
+      userId: userCurrentId || '', // Plus haut il y a une vérification afin de s'assurer que le cookie ne soit pas vide
       rulesetId: game,
       cards: [] // view later to add cards at the creation time
     };
