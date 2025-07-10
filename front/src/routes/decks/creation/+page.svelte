@@ -9,18 +9,38 @@
   import type { PageProps } from "./$types";
   import type RulesetType from "$lib/interfaces/RulesetType";
 
-  let { data }: PageProps = $props();
+  let { data, form }: PageProps = $props();
 
   let rulesetsSelect: RulesetType[] = $derived([
     { uuid: "", name: "---- Choisir un jeu de référence -----------" },
     ...data.rulesets,
   ]);
 
+  const visibilitySaved = form?.visibility || "private";
+
   const dataVisibility = [
-    { label: "Privé", value: "private", checked: true },
-    { label: "Non répertorié", value: "unlisted" },
-    { label: "Public", value: "public" },
+    {
+      label: "Privé",
+      value: "private",
+      checked: visibilitySaved === "private",
+    },
+    {
+      label: "Non répertorié",
+      value: "unlisted",
+      checked: visibilitySaved === "unlisted",
+    },
+    {
+      label: "Public",
+      value: "public",
+      checked: visibilitySaved === "public",
+    },
   ];
+
+  let valueName: string = $state(form?.name ?? "");
+  let valueSelect: string = $derived(form?.game ?? rulesetsSelect[0].uuid);
+  let disabledButton: boolean = $derived(
+    valueName.length < 1 || valueSelect === rulesetsSelect[0].uuid,
+  );
 </script>
 
 <div class="my-page flex flex-col">
@@ -33,13 +53,27 @@
     action="?/createDeck"
     class="flex flex-col gap-4 my-content"
   >
+    <p>* Champs obligatoires</p>
+    {#if form?.isMissing}
+      <p class="text-(--color-error-500)">
+        Veuillez remplir tous les champs obligatoires avant de soumettre votre
+        inscription
+      </p>
+    {/if}
+    {#if form?.isError}
+      <p class="text-(--color-error-500)">
+        {form.message}
+      </p>
+    {/if}
     <InputTextCustom
+      bind:value={valueName}
       label="Nom du deck"
       name="name"
       placeholder="Entrer un nom de deck"
       required
     />
     <SelectCustom
+      bind:value={valueSelect}
       label="Jeu de référence"
       name="game"
       options={rulesetsSelect}
@@ -48,6 +82,7 @@
     <TextareaCustom
       label="Description (optionnel)"
       name="description"
+      value={form?.description}
       rows={4}
       maxlength={500}
       placeholder="Ajouter une description ?"
@@ -60,7 +95,7 @@
     />
     <RadioGroupForImport title="Importer des cartes à la création ?" />
     <div class="flex justify-center">
-      <ButtonSubmitCustom name="Créer" />
+      <ButtonSubmitCustom name="Créer" disabled={disabledButton} />
     </div>
   </form>
 </div>

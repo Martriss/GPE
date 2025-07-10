@@ -4,6 +4,7 @@
   interface InputTextareaCustomProps {
     label: string;
     name: string;
+    value?: string;
     placeholder?: string;
     disabled?: boolean;
     maxlength?: number;
@@ -25,17 +26,18 @@
     colorRequired,
     rows = 2,
     resize = "none",
+    value = $bindable(),
   }: InputTextareaCustomProps = $props();
 
-  let value: string = $state("");
-  let sizeUsed: number = $derived(value.length);
+  let val: string = $state(value ?? "");
+  let sizeUsed: number = $derived(val.length);
 </script>
 
 <label class="label">
   <LabelCustom {label} {required} {colorRequired} />
   <textarea
     {name}
-    bind:value
+    bind:value={val}
     class="input"
     style:resize
     {placeholder}
