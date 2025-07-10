@@ -5,6 +5,7 @@
   interface InputTextCustomProps {
     label: string;
     name: string;
+    value?: string;
     placeholder?: string;
     pattern?: string;
     disabled?: boolean;
@@ -18,6 +19,7 @@
   let {
     label,
     name,
+    value = $bindable(),
     placeholder,
     pattern,
     disabled = false,
@@ -34,6 +36,7 @@
   <input
     type="text"
     {name}
+    bind:value
     class="input"
     {placeholder}
     {pattern}
