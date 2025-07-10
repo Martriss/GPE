@@ -3,7 +3,7 @@ import { getAllRulesets } from '$lib/server/services/rulesetService';
 import { createUserDeck } from '$lib/server/services/deckService';
 import type DeckType from '$lib/interfaces/DeckType';
 import { fail, redirect } from '@sveltejs/kit';
-import { PUBLIC_USER_FIREBASE } from '$env/static/public';
+import { error } from 'console';
 
 export const load: PageServerLoad = async () => {
   return {
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions = {
-  createDeck: async ({ request }) => {
+  createDeck: async ({ request, cookies }) => {
     const data = await request.formData();
     const name = data.get("name")?.toString();
     const game = data.get("game")?.toString();
@@ -31,6 +31,13 @@ export const actions = {
       return fail(400, { name, isMissing: true, isEmpty: true });
     }
 
+    const userCurrentId = cookies.get('user_id');
+    if (!userCurrentId) {
+      // Normalement nous ne sommes jamais sensé arrivé dedans, parce que l'utilisateur doit être connecté pour accéder à la page de création
+      // Essayer de voir pour afficher un message d'erreur si jamais l'on rentre ici
+      error(500);
+    }
+
     // Comportement par défaut de visibilité lors de la création d'un deck
     let isPublic: boolean = false;
     let isShared: boolean = false;
@@ -44,7 +51,7 @@ export const actions = {
       description: data.get("description")?.toString(),
       isPublic,
       isShared,
-      userId: PUBLIC_USER_FIREBASE, // replace later the user uuid,
+      userId: userCurrentId || '', // Plus haut il y a une vérification de le cookie ne soit pas vide 
       rulesetId: game,
       cards: [] // view later to add cards at the creation time
     };

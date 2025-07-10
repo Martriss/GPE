@@ -3,10 +3,10 @@
 	import Swords from "@lucide/svelte/icons/swords";
 	import BookOpenText from "@lucide/svelte/icons/book-open-text";
 	import Layers from "@lucide/svelte/icons/layers";
-	import UserRound from "@lucide/svelte/icons/user-round";
 	import DropListNav from "$lib/components/DropList/DropListNav.svelte";
+	import type { LayoutProps } from "./$types";
 
-	let { children } = $props();
+	let { data, children }: LayoutProps = $props();
 
 	const gameActions = [
 		{ display: "Créer une partie", href: "#" },
@@ -57,19 +57,14 @@
 		>
 			<Layers size={iconSize} />
 		</DropListNav>
-		<a href="#" aria-label="Aller à la page du profil" class="disabled"
-			><UserRound size={iconSize} /></a
-		>
+		{#if data.isConnected}
+			<form action="/?/logout" method="POST">
+				<button>Déconnexion</button>
+			</form>
+		{:else}
+			<a href="/signin">Connexion</a>
+		{/if}
 	</nav>
 </header>
 
 {@render children()}
-
-<style>
-	a.disabled {
-		pointer-events: none;
-		cursor: default;
-		user-select: none;
-		opacity: 0.5;
-	}
-</style>
