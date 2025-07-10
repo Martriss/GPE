@@ -2,6 +2,7 @@
   import type { FullAutoFill } from "svelte/elements";
   import LabelCustom from "./LabelCustom.svelte";
   import Eye from "@lucide/svelte/icons/eye";
+  import EyeOff from "@lucide/svelte/icons/eye-off";
 
   interface InputPasswordCustomProps {
     label: string;
@@ -51,13 +52,17 @@
       {readonly}
       {autocomplete}
     />
-    <div class="flex relative top-[-1.75rem] pe-4 justify-end">
+    <div class="flex relative top-[-1.75rem] pe-4 justify-end cursor-text">
       <button
         type="button"
         onclick={handleShowPwd}
         aria-label="Afficher ou masquer le mot de passe"
       >
-        <Eye />
+        {#if showPwd}
+          <EyeOff />
+        {:else}
+          <Eye />
+        {/if}
       </button>
     </div>
   </div>
