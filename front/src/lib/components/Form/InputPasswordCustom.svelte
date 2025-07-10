@@ -7,6 +7,7 @@
   interface InputPasswordCustomProps {
     label: string;
     name: string;
+    value?: string;
     pattern?: string;
     placeholder?: string;
     readonly?: boolean;
@@ -20,6 +21,7 @@
   let {
     label,
     name,
+    value = $bindable(),
     pattern,
     placeholder,
     readonly,
@@ -43,6 +45,7 @@
     <input
       type={showPwd ? "text" : "password"}
       {name}
+      bind:value
       class="input pe-12"
       {placeholder}
       {pattern}

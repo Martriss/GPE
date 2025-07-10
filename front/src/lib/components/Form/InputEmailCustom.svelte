@@ -27,7 +27,7 @@
     readonly = false,
     colorRequired,
     autocomplete = "off",
-    value,
+    value = $bindable(),
   }: InputTextCustomProps = $props();
 </script>
 
@@ -36,7 +36,7 @@
   <input
     type="email"
     {name}
-    {value}
+    bind:value
     class="input"
     {placeholder}
     {pattern}

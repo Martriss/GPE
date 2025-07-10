@@ -1,6 +1,7 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, validatePassword, type UserCredential } from "@firebase/auth";
 import { auth } from "./client";
 import type { Cookies } from "@sveltejs/kit";
+import type { FirebaseError } from "firebase/app";
 
 export const currentUser = auth.currentUser;
 
@@ -54,6 +55,10 @@ export async function registerWithEmailAndPassword(cookies: Cookies, email: stri
     cookies.set('user_id', userCredential.user.uid, { path: '/' });
     console.log("User register and connected");
   } catch (err) {
+    const error = err as FirebaseError;
+    if (error.code === 'auth/email-already-in-use' || error.code === 'auth/invalid-email') {
+      throw new Error("Problem with email");
+    }
     throw new Error("Enabled to register the user to firebase");
   }
 }
