@@ -1,10 +1,10 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
-@import '@skeletonlabs/skeleton';
-@import '@skeletonlabs/skeleton/optional/presets';
-@import '@skeletonlabs/skeleton/themes/sahara';
+@import "@skeletonlabs/skeleton";
+@import "@skeletonlabs/skeleton/optional/presets";
+@import "@skeletonlabs/skeleton/themes/sahara";
 /* @import '@skeletonlabs/skeleton/themes/catppuccin'; */
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -17,3 +17,4 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+@custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
