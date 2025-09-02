@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "", // sets a URI for the schema. You can use this unique URI to refer to elements of the schema from inside the same document or from external JSON documents. https://json-schema.org/understanding-json-schema/basics#declaring-a-unique-identifier,
+  "title": "Deck",
+  "description": "A deck for a ruleset",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The id of the deck. Expects an uuid",
+      "type": "string"
+    },
+    "name": {
+      "description": "The name of the deck",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20,
+      "pattern": "^[a-zA-Z0-9 \(\)\'\"\#\[\]]*$"
+    },
+    "description": {
+      "description": "The description of the deck",
+      "type": "string",
+      "maxLength": 500,
+      "pattern": "^[a-zA-Z0-9 \(\)\'\"\#\[\]]*$"
+    },
+    "isPublic": {
+      "description": "To find out if everyone can see it or not",
+      "type": "boolean"
+    },
+    "userId": {
+      "description": "Refers to a user. Expects an uuid",
+      "type": "string"
+    },
+    "rulesetId": {
+      "description": "Refers to a rule set id. Expects an uuid",
+      "type": "string"
+    },
+    "cards": {
+      "description": "List of cards in the deck",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "isShared": {
+      "description": "To find out if the deck has been shared",
+      "type": "boolean"
+    },
+    "required": [
+      "id",
+      "name",
+      "isPublic",
+      "userId",
+      "rulesetId",
+      "isShared"
+    ]
+  }
+}

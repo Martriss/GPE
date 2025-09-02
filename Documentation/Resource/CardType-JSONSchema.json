@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "", // sets a URI for the schema. You can use this unique URI to refer to elements of the schema from inside the same document or from external JSON documents. https://json-schema.org/understanding-json-schema/basics#declaring-a-unique-identifier
+  "title": "CardType",
+  "description": "A card type for a ruleset",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The id of a card type. Expects an uuid",
+      "type": "string"
+    },
+    "name": {
+      "description": "The name of a card type",
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9 \(\)\'\"\#\[\]]*$"
+    },
+    "rulesetId": {
+      "description": "Refers to a rule set id. Expects an uuid",
+      "type": "string"
+    },
+    "properties": {
+      "description": "Properties of a card type",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "The name of one property on the card type",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9 \(\)\'\"\#\[\]]*$"
+          },
+          "acceptableValue": {
+            "description": "The acceptable value for the Name. Expects a regex",
+            "type": "string"
+          },
+          "isOptional": {
+            "description": "If the Name is a required property of the card type",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "acceptableValue",
+          "isOptional"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "rulesetId",
+    "properties"
+  ]
+}
