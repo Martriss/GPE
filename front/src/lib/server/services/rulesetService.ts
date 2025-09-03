@@ -3,7 +3,10 @@ import type RulesetType from "$lib/interfaces/RulesetType";
 import { collection, doc, documentId, getDoc, getDocs, query, where } from "firebase/firestore";
 import { getRulesetTypeWithQueryDocumentSnapshot } from "../utils/mapData";
 
-
+/**
+ * Pour obtenir tous les ruleset existants
+ * @returns un tableau de ruleset
+ */
 export async function getAllRulesets() {
   const rulesets = await getDocs(collection(firestore, "rulesets"));
   let data: RulesetType[] = [];
