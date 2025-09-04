@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/svelte";
 import { describe, expect, it, vi } from "vitest";
 import type { FullAutoFill } from "svelte/elements";
-import InputEmailCustom from "./InputEmailCustom.svelte";
+import InputTextCustom from "./InputTextCustom.svelte";
 
 vi.mock('./LabelCustom.svelte', () => {
   return {
@@ -13,23 +13,23 @@ vi.mock('./LabelCustom.svelte', () => {
   }
 });
 
-describe(InputEmailCustom.name, () => {
+describe(InputTextCustom.name, () => {
   const defaultGivenProps = {
     label: 'my label',
     name: 'my name'
   };
 
-  it('should render an input type email with the correct name', () => {
+  it('should render an input type text with the correct name', () => {
     const givenProps = {
       label: 'my label',
       name: 'my name'
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
     expect(input).toHaveAttribute('name', 'my name');
-    expect(input).toHaveAttribute('type', 'email');
+    expect(input).toHaveAttribute('type', 'text');
   });
 
   it("should render without value, placeholder, disabled, maxlength, readonly, required and autocomplete when the props aren't given", () => {
@@ -37,7 +37,7 @@ describe(InputEmailCustom.name, () => {
       label: 'my label',
       name: 'my name'
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -55,7 +55,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       required: true
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -67,7 +67,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       disabled: true
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -79,7 +79,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       readonly: true
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -91,7 +91,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       pattern: "^0[1-9]\d{8}$"
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -103,7 +103,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       placeholder: '0612345678'
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -115,7 +115,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       maxlength: 4,
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -127,7 +127,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       autocomplete: "name" as FullAutoFill
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
 
@@ -139,7 +139,7 @@ describe(InputEmailCustom.name, () => {
       ...defaultGivenProps,
       value: "MDSqs24@azeA"
     };
-    render(InputEmailCustom, givenProps);
+    render(InputTextCustom, givenProps);
 
     const input = screen.getByRole("textbox") as HTMLInputElement;
 
