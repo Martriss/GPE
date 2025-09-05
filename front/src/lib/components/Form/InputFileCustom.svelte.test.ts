@@ -2,29 +2,21 @@ import { describe, expect, it, vi } from "vitest";
 import InputFileCustom from "./InputFileCustom.svelte";
 import { render, screen } from "@testing-library/svelte";
 
-vi.mock('./LabelCustom.svelte', () => {
-  return {
-    default: () => {
-      return {
-        $$render: () => '<div data-testid="mock-copy-modal"></div>'
-      }
-    }
-  }
-});
-
 describe(InputFileCustom.name, () => {
   const defaultGivenProps = {
     label: "my label",
     name: "my name"
   };
 
-  it('should render an input type file with the correct name and default accept', () => {
+  it('should render an input type file with the correct name and default accept, and a label', () => {
     render(InputFileCustom, defaultGivenProps);
 
     const input = screen.getByTestId('input-file-custom');
+    const label = screen.getByText("my label");
 
     expect(input).toHaveAttribute('name', "my name");
     expect(input).toHaveAttribute('accept', "image/*");
+    expect(label).toBeInTheDocument();
   });
 
   it('should render without disabled, required attributes when the props are not given', () => {

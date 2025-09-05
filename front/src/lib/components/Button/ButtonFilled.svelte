@@ -13,6 +13,7 @@
   type="button"
   onclick={handleClick}
   class="btn preset-filled-primary-500 {isLarge ? 'text-xl w-40' : ''}"
+  style:pointer-events={disabled ? "none" : "auto"}
   {disabled}
 >
   {name}

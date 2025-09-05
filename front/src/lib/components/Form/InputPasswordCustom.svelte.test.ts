@@ -4,32 +4,24 @@ import { render, screen } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import type { FullAutoFill } from "svelte/elements";
 
-vi.mock('./LabelCustom.svelte', () => {
-  return {
-    default: () => {
-      return {
-        $$render: () => '<div data-testid="mock-copy-modal"></div>'
-      }
-    }
-  }
-});
-
 describe(InputPasswordCustom.name, () => {
   const defaultGivenProps = {
     label: "my label",
     name: "my name"
   };
 
-  it("should render an input type password with the correct name and an button", () => {
+  it("should render an input type password with the correct name, an button and a label", () => {
     render(InputPasswordCustom, defaultGivenProps);
 
     const input = screen.getByTestId("input-password-custom");
     const button = screen.getByRole('button');
+    const label = screen.getByText("my label");
 
     expect(input).toBeInTheDocument();
     expect(input).toHaveAttribute('name', "my name");
     expect(input).toHaveAttribute("type", "password");
     expect(button).toBeInTheDocument();
+    expect(label).toBeInTheDocument();
   });
 
   it("should render without value, pattern, placeholder, readonly, required, autocomplete, disabled and maxlength when the props aren't given", () => {

@@ -13,10 +13,12 @@
 
 <dialog
   bind:this={dialogRef}
+  data-testid="modal"
   class="absolute-center bg-(--body-background-color) dark:bg-(--body-background-color-dark) text-(--base-font-color) dark:text-(--base-font-color-dark) py-4 px-8 rounded-xl min-w-[75vw] w-screen unset-width overflow-clip"
 >
   <button
     type="button"
+    data-testid="button-close-popup"
     onclick={onClose}
     class="relative top-2 start-[97%] opacity-65"
     aria-label="fermer la popup"

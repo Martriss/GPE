@@ -11,6 +11,7 @@
 
 <div class="tooltip-div">
   <span
+    data-testid="tooltip-info"
     class="tooltip-child text-white dark:text-black bg-[#333] dark:bg-[#f0f0f0]"
   >
     {infoOnHover}

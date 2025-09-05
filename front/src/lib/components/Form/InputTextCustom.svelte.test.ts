@@ -3,23 +3,13 @@ import { describe, expect, it, vi } from "vitest";
 import type { FullAutoFill } from "svelte/elements";
 import InputTextCustom from "./InputTextCustom.svelte";
 
-vi.mock('./LabelCustom.svelte', () => {
-  return {
-    default: () => {
-      return {
-        $$render: () => '<div data-testid="mock-copy-modal"></div>'
-      }
-    }
-  }
-});
-
 describe(InputTextCustom.name, () => {
   const defaultGivenProps = {
     label: 'my label',
     name: 'my name'
   };
 
-  it('should render an input type text with the correct name', () => {
+  it('should render an input type text with the correct name and a label', () => {
     const givenProps = {
       label: 'my label',
       name: 'my name'
@@ -27,9 +17,11 @@ describe(InputTextCustom.name, () => {
     render(InputTextCustom, givenProps);
 
     const input = screen.getByRole('textbox');
+    const label = screen.getByText("my label");
 
     expect(input).toHaveAttribute('name', 'my name');
     expect(input).toHaveAttribute('type', 'text');
+    expect(label).toBeInTheDocument();
   });
 
   it("should render without value, placeholder, disabled, maxlength, readonly, required and autocomplete when the props aren't given", () => {
