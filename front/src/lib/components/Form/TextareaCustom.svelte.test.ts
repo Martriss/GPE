@@ -2,29 +2,21 @@ import { describe, expect, it, vi } from "vitest";
 import TextareaCustom from "./TextareaCustom.svelte";
 import { render, screen } from "@testing-library/svelte";
 
-vi.mock('./LabelCustom.svelte', () => {
-  return {
-    default: () => {
-      return {
-        $$render: () => '<div data-testid="mock-copy-modal"></div>'
-      }
-    }
-  }
-});
-
 describe(TextareaCustom.name, () => {
   const defaultGivenProps = {
     label: "my label",
     name: "my name"
   };
 
-  it("should render a textarea", () => {
+  it("should render a textarea with a label", () => {
     render(TextareaCustom, defaultGivenProps);
 
     const textarea = screen.getByRole("textbox");
+    const label = screen.getByText("my label");
 
     expect(textarea).toBeInTheDocument();
     expect(textarea).toHaveAttribute("name", "my name");
+    expect(label).toBeInTheDocument();
   });
 
   it("should render without value, placeholder, disabled, required, maxlength, readonly, rows and resize when the props aren't given ", () => {

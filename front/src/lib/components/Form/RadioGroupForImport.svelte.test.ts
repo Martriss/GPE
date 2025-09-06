@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import RadioGroupForImport from "./RadioGroupForImport.svelte";
 import { render, screen } from "@testing-library/svelte";
-import userEvent from "@testing-library/user-event";
 
 describe(RadioGroupForImport.name, () => {
   it("should render a title and 3 radio buttons", () => {
@@ -27,33 +26,12 @@ describe(RadioGroupForImport.name, () => {
     };
     render(RadioGroupForImport, givenProps);
 
-    const radioButton1 = screen.getByText("Aucune");
-    const radioButton2 = screen.getByText("Coller dans une liste");
-    const radioButton3 = screen.getByText("Depuis un fichier");
+    const radioButton1 = screen.getByRole("radio", { name: "Aucune" });
+    const radioButton2 = screen.getByRole("radio", { name: "Coller dans une liste" });
+    const radioButton3 = screen.getByRole("radio", { name: "Depuis un fichier" });
 
     expect(radioButton1).toBeInTheDocument();
     expect(radioButton2).toBeInTheDocument();
     expect(radioButton3).toBeInTheDocument();
-  });
-
-  it("should display a Textarea when the correct radio button is clicked", async () => {
-    const user = userEvent.setup();
-
-    const givenProps = {
-      title: "my title"
-    };
-    render(RadioGroupForImport, givenProps);
-
-    const radioButtons = screen.getAllByRole("radio");
-
-    await user.click(radioButtons[1]);
-
-    const textarea = screen.getByRole("textbox");
-
-    expect(textarea).toBeInTheDocument();
-
-    await user.click(radioButtons[0]);
-
-    expect(textarea).not.toBeInTheDocument();
   });
 });

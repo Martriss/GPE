@@ -2,16 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import SelectCustom from "./SelectCustom.svelte";
 import { render, screen } from "@testing-library/svelte";
 
-vi.mock('./LabelCustom.svelte', () => {
-  return {
-    default: () => {
-      return {
-        $$render: () => '<div data-testid="mock-copy-modal"></div>'
-      }
-    }
-  }
-});
-
 describe(SelectCustom.name, () => {
   const defaultOptions = [
     {
@@ -29,14 +19,16 @@ describe(SelectCustom.name, () => {
     options: defaultOptions,
   };
 
-  it("should render a select with his options", () => {
+  it("should render a select with his options and a label", () => {
     render(SelectCustom, defaultGivenProps);
 
     const select = screen.getByRole("combobox");
     const options = screen.getAllByRole("option");
+    const label = screen.getByText("my label");
 
     expect(select).toBeInTheDocument();
     expect(options).toHaveLength(2);
+    expect(label).toBeInTheDocument();
   });
 
   it("should render with correct value and without attributes: disabled, requized, size and value when the props isn't given", () => {

@@ -16,7 +16,7 @@
   <div class="flex flex-wrap justify-between mx-2 gap-1">
     <label class="flex items-center space-x-1 border rounded-md px-2 py-1">
       <input class="radio" type="radio" bind:group={val} value="none" />
-      <p>Aucune</p>
+      <span>Aucune</span>
     </label>
     <label
       class="flex items-center space-x-1 border rounded-md px-2 py-1 opacity-50"
@@ -28,7 +28,7 @@
         value="list"
         disabled
       />
-      <p>Coller dans une liste</p>
+      <span>Coller dans une liste</span>
     </label>
     <label
       class="flex items-center space-x-1 border rounded-md px-2 py-1 opacity-50"
@@ -40,7 +40,7 @@
         value="file"
         disabled
       />
-      <p>Depuis un fichier</p>
+      <span>Depuis un fichier</span>
     </label>
   </div>
   <div class="mx-5 mb-2 mt-6">

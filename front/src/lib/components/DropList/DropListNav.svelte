@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
+  import { onDestroy, onMount, type Snippet } from "svelte";
 
   interface DropListNavProps {
     linkList: {
@@ -19,16 +19,42 @@
   }: DropListNavProps = $props();
   let isShow: boolean = $state(false);
 
+  // svelte-ignore non_reactive_update
+  let dropListNavRef: HTMLDivElement;
+
   const handleButton = () => {
     isShow = !isShow;
   };
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      dropListNavRef &&
+      e.target instanceof Node &&
+      !dropListNavRef.contains(e.target)
+    ) {
+      isShow = false;
+    }
+  };
+
+  onMount(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("click", handleClickOutside);
+    }
+  });
+
+  onDestroy(() => {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("click", handleClickOutside);
+    }
+  });
 </script>
 
-<div class="dropdown test">
+<div bind:this={dropListNavRef} class="dropdown">
   <button aria-label={ariaLabel} onclick={handleButton} {disabled}
     >{@render children()}</button
   >
   <div
+    data-testid="drop-list-nav-child"
     class="dropdown-child bg-(--body-background-color) dark:bg-(--body-background-color-dark)
     {isShow ? 'block' : 'hidden'}"
   >
