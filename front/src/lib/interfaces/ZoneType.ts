@@ -60,7 +60,7 @@ export interface RightAngle extends Right {
   allowedAngles: number[];
 }
 
-interface PositionAction {
+export interface PositionAction {
   atStart: Right;
   atEnd: Right;
   anywhere: Right;

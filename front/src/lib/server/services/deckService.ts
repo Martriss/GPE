@@ -102,7 +102,7 @@ export async function getDecksByUserSortByGame(userId: string): Promise<DecksByG
 }
 
 /**
- * Pour mettre à jour un deck
+ * Pour mettre à jour les cartes d'un deck
  * @param deck deck avec les données à jour. Attend un DeckType
  */
 export async function updateCardsInDeck(deck: DeckType): Promise<void> {

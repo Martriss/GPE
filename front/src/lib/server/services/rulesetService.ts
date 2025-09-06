@@ -45,7 +45,7 @@ export async function getRulesetsByIds(ids: string[]): Promise<RulesetType[]> {
   const rulesets: RulesetType[] = [];
 
   for (let i = 0; i < ids.length; i += max) {
-    const batchIds = ids.slice(i, i + max);
+    const batchIds: string[] = ids.slice(i, i + max);
     const q = query(collection(firestore, "rulesets"), where(documentId(), "in", batchIds));
     const snapshot = await getDocs(q);
     snapshot.forEach(doc => rulesets.push(getRulesetTypeWithQueryDocumentSnapshot(doc)));

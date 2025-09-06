@@ -51,7 +51,7 @@ export async function searchCardsByName(
 
     return results;
   } catch (error) {
-    console.error("Erreur lors de la recherche de cartes:", error);
+    // console.error("Erreur lors de la recherche de cartes:", error);
     throw new Error("Impossible de rechercher les cartes");
   }
 }
