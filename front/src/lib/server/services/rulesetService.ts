@@ -4,10 +4,26 @@ import { collection, doc, documentId, getDoc, getDocs, query, where } from "fire
 import { getRulesetTypeWithQueryDocumentSnapshot } from "../utils/mapData";
 
 /**
- * Pour obtenir tous les ruleset existants
- * @returns un tableau de ruleset
+ * Pour récupérer tous les rulesets publics, autrement dit, ceux jouables
+ * @returns tous les rulesets publics
  */
-export async function getAllRulesets() {
+export async function getAllPlayableRulesets(): Promise<RulesetType[]> {
+  const q = query(collection(firestore, "rulesets"), where("isPublic", "==", true));
+  const rulesets = await getDocs(q);
+  let data: RulesetType[] = [];
+
+  rulesets.forEach((doc) => {
+    data.push(getRulesetTypeWithQueryDocumentSnapshot(doc));
+  });
+
+  return data;
+}
+
+/**
+ * Pour récupérer tous les rulesets
+ * @returns tous les rulesets
+ */
+export async function getAllRulesets(): Promise<RulesetType[]> {
   const rulesets = await getDocs(collection(firestore, "rulesets"));
   let data: RulesetType[] = [];
 

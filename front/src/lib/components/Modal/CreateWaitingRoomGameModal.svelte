@@ -1,9 +1,10 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import type RulesetType from "$lib/interfaces/RulesetType";
   import ButtonFilled from "../Button/ButtonFilled.svelte";
   import Modal from "./Modal.svelte";
 
-  interface SelectGameModalProps {
+  interface CreateWaitingRoomGameModalProps {
     dialogRef: HTMLDialogElement;
     onClose: (e: Event) => void;
     rulesets: RulesetType[];
@@ -13,15 +14,31 @@
     dialogRef = $bindable(),
     onClose,
     rulesets,
-  }: SelectGameModalProps = $props();
+  }: CreateWaitingRoomGameModalProps = $props();
 
   let hasAtLeastOneRuleset = $derived(rulesets.length > 0);
-  let valueSelect: string = $state(rulesets[0].uuid ?? "");
+  // svelte-ignore state_referenced_locally
+  let valueSelect: string = $state(
+    hasAtLeastOneRuleset ? rulesets[0].uuid : "",
+  );
 
-  const createWaitingRoom = (e: Event) => {
-    // faire un appel pour créer une salle d'attente "numériquement"
-    // récupérer un id
-    // se déplacer dans la salle
+  const createWaitingRoom = () => {
+    const response = fetch("/api/games/", {
+      method: "POST",
+      body: JSON.stringify({ rulesetId: valueSelect }),
+    });
+
+    response
+      .then(async (r) => {
+        if (r.ok) {
+          // pour récupérer les données que la requête a renvoyé
+          const data = await r.json();
+          goto(`/salon/${data.gameId}`);
+        }
+      })
+      .catch((err) => {
+        // Traiter le cas d'erreur
+      });
   };
 </script>
 
@@ -37,16 +54,15 @@
         <select
           aria-labelledby="select-ruleset-label"
           class="select"
-          value={valueSelect}
+          bind:value={valueSelect}
           required
-          size="10"
         >
           {#each rulesets as { name, uuid }}
             <option value={uuid}>{name}</option>
           {/each}
         </select>
       {:else}
-        <p>Aucun jeu n'est disponible</p>
+        <p class="text-lg text-pretty">Aucun jeu n'est disponible</p>
       {/if}
     </div>
     <footer class="flex gap-y-4 flex-wrap gap-x-16 justify-center">
