@@ -89,11 +89,13 @@
       <Deck {deck} onDelete={handleDelete} />
     {/each}
   </div>
-  <ConfirmModal
-    bind:dialogRef={dialogModalDelete}
-    title="Attention la suppression est définitive"
-    question="Confirmez-vous la suppression définitive de votre deck ?"
-    onCloseTrue={handleTrue}
-    onCloseFalse={handleCloseDialog}
-  />
+  {#if nbDecks > 0}
+    <ConfirmModal
+      bind:dialogRef={dialogModalDelete}
+      title="Attention la suppression est définitive"
+      question="Confirmez-vous la suppression définitive de votre deck ?"
+      onCloseTrue={handleTrue}
+      onCloseFalse={handleCloseDialog}
+    />
+  {/if}
 </div>

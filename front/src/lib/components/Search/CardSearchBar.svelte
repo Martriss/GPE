@@ -188,6 +188,7 @@
             aria-expanded={showDropdown}
             aria-haspopup="listbox"
             aria-autocomplete="list"
+            aria-controls="card-search-bar-dropdown"
         />
 
         <!-- Clear button -->
@@ -216,6 +217,7 @@
     <!-- Dropdown Results -->
     {#if showDropdown}
         <div
+            id="card-search-bar-dropdown"
             bind:this={dropdownRef}
             class="card absolute top-full left-0 right-0 mt-1 z-50 max-h-80 overflow-y-auto p-0"
             role="listbox"

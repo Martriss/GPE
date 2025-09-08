@@ -3,7 +3,10 @@ import type RulesetType from "$lib/interfaces/RulesetType";
 import { collection, doc, documentId, getDoc, getDocs, query, where } from "firebase/firestore";
 import { getRulesetTypeWithQueryDocumentSnapshot } from "../utils/mapData";
 
-
+/**
+ * Pour obtenir tous les ruleset existants
+ * @returns un tableau de ruleset
+ */
 export async function getAllRulesets() {
   const rulesets = await getDocs(collection(firestore, "rulesets"));
   let data: RulesetType[] = [];
@@ -42,7 +45,7 @@ export async function getRulesetsByIds(ids: string[]): Promise<RulesetType[]> {
   const rulesets: RulesetType[] = [];
 
   for (let i = 0; i < ids.length; i += max) {
-    const batchIds = ids.slice(i, i + max);
+    const batchIds: string[] = ids.slice(i, i + max);
     const q = query(collection(firestore, "rulesets"), where(documentId(), "in", batchIds));
     const snapshot = await getDocs(q);
     snapshot.forEach(doc => rulesets.push(getRulesetTypeWithQueryDocumentSnapshot(doc)));

@@ -22,5 +22,13 @@
 
 <label class="label">
   <LabelCustom {label} {required} {colorRequired} />
-  <input type="file" {name} class="input" {disabled} {required} {accept} />
+  <input
+    data-testid="input-file-custom"
+    type="file"
+    {name}
+    class="input"
+    {disabled}
+    {required}
+    {accept}
+  />
 </label>
