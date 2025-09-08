@@ -89,7 +89,7 @@ export async function getDecksByUserSortByGame(userId: string): Promise<DecksByG
 
   const rulesets = await getRulesetsByIds(Array.from(myMap.keys()));
   for (let i = 0; i < rulesets.length; i++) {
-    const decks = myMap.get(rulesets[i].uuid);
+    const decks = myMap.get(rulesets[i].id);
     if (!decks) continue; // logiquement ce n'est jamais sensé rentré ici
 
     userDecks.push({

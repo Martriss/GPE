@@ -7,13 +7,18 @@
   import RadioGroupForImport from "$lib/components/Form/RadioGroupForImport.svelte";
   import ButtonSubmitCustom from "$lib/components/Form/ButtonSubmitCustom.svelte";
   import type { PageProps } from "./$types";
-  import type RulesetType from "$lib/interfaces/RulesetType";
+  import type { OptionType } from "$lib/interfaces/InputType";
 
   let { data, form }: PageProps = $props();
 
-  let rulesetsSelect: RulesetType[] = $derived([
-    { uuid: "", name: "---- Choisir un jeu de référence -----------" },
-    ...data.rulesets,
+  let rulesetsSelect: OptionType[] = $derived([
+    { value: "", label: "---- Choisir un jeu de référence -----------" },
+    ...data.rulesets.map((ruleset) => {
+      return {
+        label: ruleset.name,
+        value: ruleset.id,
+      };
+    }),
   ]);
 
   const visibilitySaved = form?.visibility || "private";
@@ -37,9 +42,9 @@
   ];
 
   let valueName: string = $state(form?.name ?? "");
-  let valueSelect: string = $derived(form?.game ?? rulesetsSelect[0].uuid);
+  let valueSelect: string = $derived(form?.game ?? rulesetsSelect[0].value);
   let disabledButton: boolean = $derived(
-    valueName.length < 1 || valueSelect === rulesetsSelect[0].uuid,
+    valueName.length < 1 || valueSelect === rulesetsSelect[0].value,
   );
 </script>
 

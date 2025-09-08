@@ -187,8 +187,11 @@ describe("getDecksByUserSortByGame", () => {
     };
     const mockResultRulesetsByIds: RulesetType[] = [
       {
-        uuid: "aezkld&^p",
-        name: "mtg"
+        id: "aezkld&^p",
+        name: "mtg",
+        isDraft: false,
+        isPublic: true,
+        createdBy: "created by"
       }
     ];
 

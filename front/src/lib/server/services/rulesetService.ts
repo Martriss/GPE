@@ -45,7 +45,7 @@ export async function getRulesetById(id: string): Promise<RulesetType> {
   if (!docSnap.exists())
     throw new Error("There are no ruletset with this id");
 
-  console.log(docSnap.data());
+  // console.log(docSnap.data());
 
   const ruleset = getRulesetTypeWithQueryDocumentSnapshot(docSnap);
 

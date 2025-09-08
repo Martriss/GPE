@@ -13,7 +13,7 @@
   const options: OptionType[] = data.rulesets.map((ruleset) => {
     return {
       label: ruleset.name,
-      value: ruleset.uuid,
+      value: ruleset.id,
     };
   });
   let valueInputCreateWaitingRoomGame: string = $state(

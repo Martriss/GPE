@@ -15,12 +15,18 @@ describe("getAllRulesets", async () => {
   it("should return an array of RulesetType", async () => {
     const mockResultGetDocs = [{}, {}] as unknown as firestoreModule.QuerySnapshot<firestoreModule.DocumentData, firestoreModule.DocumentData>;
     const mockResultMapOnce: RulesetType = {
-      uuid: "aezkld&^p",
-      name: "mtg"
+      id: "aezkld&^p",
+      name: "mtg",
+      isDraft: false,
+      isPublic: true,
+      createdBy: "created by"
     };
     const mockResultMapSecond: RulesetType = {
-      uuid: "zaeqdzaq&^p",
-      name: "pokemon"
+      id: "zaeqdzaq&^p",
+      name: "pokemon",
+      isDraft: false,
+      isPublic: true,
+      createdBy: "created by"
     };
 
     const expectResult: RulesetType[] = [mockResultMapOnce, mockResultMapSecond];
@@ -45,8 +51,11 @@ describe("getRulesetById", () => {
       exists: () => true
     } as unknown as firestoreModule.DocumentSnapshot<firestoreModule.DocumentData, firestoreModule.DocumentData>;
     const mockResultMap: RulesetType = {
-      uuid: "aezkld&^p",
-      name: "mtg"
+      id: "aezkld&^p",
+      name: "mtg",
+      isDraft: false,
+      isPublic: true,
+      createdBy: "created by"
     };
 
     const expectResult: RulesetType = mockResultMap;
@@ -83,12 +92,18 @@ describe("getRulesetsByIds", () => {
     const mockResultQuery = {} as unknown as firestoreModule.Query<firestoreModule.DocumentData, firestoreModule.DocumentData>;
     const mockResultGetDocs = [{}, {}] as unknown as firestoreModule.QuerySnapshot<firestoreModule.DocumentData, firestoreModule.DocumentData>;
     const mockResultMapOnce: RulesetType = {
-      uuid: "aezkld&^p",
-      name: "mtg"
+      id: "aezkld&^p",
+      name: "mtg",
+      isDraft: false,
+      isPublic: true,
+      createdBy: "created by"
     };
     const mockResultMapSecond: RulesetType = {
-      uuid: "zaeqdzaq&^p",
-      name: "pokemon"
+      id: "zaeqdzaq&^p",
+      name: "pokemon",
+      isDraft: false,
+      isPublic: true,
+      createdBy: "created by"
     };
 
     const expectResult: RulesetType[] = [mockResultMapOnce, mockResultMapSecond];

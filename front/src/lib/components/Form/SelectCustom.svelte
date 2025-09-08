@@ -1,13 +1,11 @@
 <script lang="ts">
+  import type { OptionType } from "$lib/interfaces/InputType";
   import LabelCustom from "./LabelCustom.svelte";
 
   interface SelectCustomProps {
     label: string;
     name: string;
-    options: {
-      name: string;
-      uuid: string;
-    }[];
+    options: OptionType[];
     disabled?: boolean;
     required?: boolean;
     colorRequired?: string;
@@ -30,8 +28,8 @@
 <label class="label">
   <LabelCustom {label} {required} {colorRequired} />
   <select class="select" {name} bind:value {required} {disabled} {size}>
-    {#each options as { name, uuid }}
-      <option value={uuid}>{name}</option>
+    {#each options as { label, value }}
+      <option {value}>{label}</option>
     {/each}
   </select>
 </label>
