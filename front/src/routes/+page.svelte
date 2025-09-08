@@ -1,30 +1,63 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import ButtonFilled from "$lib/components/Button/ButtonFilled.svelte";
-  import CreateWaitingRoomGameModal from "$lib/components/Modal/CreateWaitingRoomGameModal.svelte";
   import JoinWaitingRoomGameModal from "$lib/components/Modal/JoinWaitingRoomGameModal.svelte";
+  import SelectModal from "$lib/components/Modal/SelectModal.svelte";
+  import type { OptionType } from "$lib/interfaces/InputType";
   import type { PageProps } from "./$types";
 
   const { data }: PageProps = $props();
 
   // svelte-ignore non_reactive_update
-  let dialogRefCreateWaintingRoomGame: HTMLDialogElement;
+  let dialogRefCreateWaitingRoomGame: HTMLDialogElement;
+  const options: OptionType[] = data.rulesets.map((ruleset) => {
+    return {
+      label: ruleset.name,
+      value: ruleset.uuid,
+    };
+  });
+  let valueInputCreateWaitingRoomGame: string = $state(
+    options.length > 0 ? options[0].value : "",
+  );
+
   // svelte-ignore non_reactive_update
-  let dialogRefJoinWaintingRoomGame: HTMLDialogElement;
+  let dialogRefJoinWaitingRoomGame: HTMLDialogElement;
   let valueInputJoinWaitingRoomGame: string = $state("");
 
-  const handleOpenCreateWaintingRoomGameModal = () => {
-    dialogRefCreateWaintingRoomGame.showModal();
+  const handleOpenCreateWaitingRoomGameModal = () => {
+    dialogRefCreateWaitingRoomGame.showModal();
   };
-  const handleCloseCreateWaintingRoomGameModal = () => {
-    dialogRefCreateWaintingRoomGame.close();
+  const handleCloseCreateWaitingRoomGameModal = () => {
+    dialogRefCreateWaitingRoomGame.close();
+    valueInputCreateWaitingRoomGame =
+      options.length > 0 ? options[0].value : "";
   };
 
-  const handleOpenJoinWaintingRoomGameModal = () => {
-    dialogRefJoinWaintingRoomGame.showModal();
+  const handleOpenJoinWaitingRoomGameModal = () => {
+    dialogRefJoinWaitingRoomGame.showModal();
   };
-  const handleCloseJoinWaintingRoomGameModal = () => {
-    dialogRefJoinWaintingRoomGame.close();
+  const handleCloseJoinWaitingRoomGameModal = () => {
+    dialogRefJoinWaitingRoomGame.close();
     valueInputJoinWaitingRoomGame = "";
+  };
+
+  const createWaitingRoom = (e: Event) => {
+    const response = fetch("/api/games/", {
+      method: "POST",
+      body: JSON.stringify({ rulesetId: valueInputCreateWaitingRoomGame }),
+    });
+
+    response
+      .then(async (r) => {
+        if (r.ok) {
+          // pour récupérer les données que la requête a renvoyé
+          const data = await r.json();
+          goto(`/salon/${data.gameId}`);
+        }
+      })
+      .catch((err) => {
+        // Traiter le cas d'erreur
+      });
   };
 </script>
 
@@ -35,23 +68,28 @@
   <div class="flex flex-col gap-[9.5vh] mt-[19vh] items-center">
     <ButtonFilled
       name="JOUER"
-      handleClick={handleOpenCreateWaintingRoomGameModal}
+      handleClick={handleOpenCreateWaitingRoomGameModal}
       isLarge
     />
     <ButtonFilled
       name="REJOINDRE"
-      handleClick={handleOpenJoinWaintingRoomGameModal}
+      handleClick={handleOpenJoinWaitingRoomGameModal}
       isLarge
     />
   </div>
 </div>
-<CreateWaitingRoomGameModal
-  bind:dialogRef={dialogRefCreateWaintingRoomGame}
-  onClose={handleCloseCreateWaintingRoomGameModal}
-  rulesets={data.rulesets}
+<SelectModal
+  bind:dialogRef={dialogRefCreateWaitingRoomGame}
+  bind:value={valueInputCreateWaitingRoomGame}
+  onClose={handleCloseCreateWaitingRoomGameModal}
+  {options}
+  title="A quel jeu voulez-vous jouer ?"
+  buttonName="Créer un salon"
+  onClickButton={createWaitingRoom}
+  substitueInfo="Aucun jeu n'est disponible"
 />
 <JoinWaitingRoomGameModal
-  bind:dialogRef={dialogRefJoinWaintingRoomGame}
+  bind:dialogRef={dialogRefJoinWaitingRoomGame}
   bind:value={valueInputJoinWaitingRoomGame}
-  onClose={handleCloseJoinWaintingRoomGameModal}
+  onClose={handleCloseJoinWaitingRoomGameModal}
 />

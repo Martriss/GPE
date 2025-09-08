@@ -1,0 +1,1 @@
+export const PLANS_MTG = ["Alara", "Amonkhet", "Avishkar", "Dominaria", "Fiora", "Innistrad", "Ixalan", "Kamigawa", "LORWYN / SOMBRELANDE", "Mirrodin", "Ravnica", "Shandalar", "TARKIR", "Theros", "Zendikar", "新非瑞克西亚"]

@@ -9,7 +9,7 @@
   import { sortCardNameAsc } from "$lib/utils/sorts";
   import ButtonFilled from "$lib/components/Button/ButtonFilled.svelte";
   import { page } from "$app/state";
-  import CopyClipboardModal from "$lib/components/Modal/CopyClipboardModal.svelte";
+  import CopyClipboardModal from "$lib/components/CopyClipboard/CopyClipboardModal.svelte";
 
   let { data }: PageProps = $props();
   let cards: CardType[] = $state(

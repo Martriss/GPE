@@ -1,17 +1,19 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { createWaitingRoom } from '$lib/server/services/gameService';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, cookies }) => {
   const body = await request.json();
   const rulesetId: string = body?.rulesetId;
 
   if (!rulesetId)
     return json({ error: "rulesetId is missing" }, { status: 400 });
 
-  // appeler la fonction qui créé un lobby
+  const userConnected = cookies.get("user_id");
+  if (!userConnected)
+    return json({ status: 401 });
 
-  // pour l'instant la création est mocké, voir pour comment bien faire la création.
-  // on fait au moins l'affichage
+  const gameId = await createWaitingRoom(rulesetId, userConnected);
 
-  return json({ status: 201, gameId: "wRZiMSFckB2tYghtEIoE" });
+  return json({ status: 201, gameId });
 }

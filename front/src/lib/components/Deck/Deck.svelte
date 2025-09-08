@@ -6,7 +6,7 @@
   import Share2 from "@lucide/svelte/icons/share-2";
   import Eye from "@lucide/svelte/icons/eye";
   import { goto } from "$app/navigation";
-  import CopyClipboardModal from "../Modal/CopyClipboardModal.svelte";
+  import CopyClipboardModal from "../CopyClipboard/CopyClipboardModal.svelte";
   import { page } from "$app/state";
 
   interface DeckProps {
