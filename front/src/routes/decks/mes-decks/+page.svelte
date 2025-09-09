@@ -3,21 +3,20 @@
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
-
-  const mockData = {
-    gameName: "Magic: The Gathering",
-    decks: [
-      {
-        name: "Ceci est un test",
-        description: "Ceci est une description",
-        isPublic: false,
-        isShared: false,
-        userId: "MOUHAHAHA",
-        rulesetId: "AHAH",
-        cards: [],
-      },
-    ],
-  };
+  // const mockData = {
+  //   gameName: "Magic: The Gathering",
+  //   decks: [
+  //     {
+  //       name: "Ceci est un test",
+  //       description: "Ceci est une description",
+  //       isPublic: false,
+  //       isShared: false,
+  //       userId: "MOUHAHAHA",
+  //       rulesetId: "AHAH",
+  //       cards: [],
+  //     },
+  //   ],
+  // };
 </script>
 
 <div class="mx-4 my-8 flex flex-col">

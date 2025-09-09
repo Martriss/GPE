@@ -2,6 +2,7 @@ import { firestore } from "$lib/firebase/client";
 import type RulesetType from "$lib/interfaces/RulesetType";
 import { collection, doc, documentId, getDoc, getDocs, query, where } from "firebase/firestore";
 import { getRulesetTypeWithQueryDocumentSnapshot } from "../utils/mapData";
+import type ZoneType from "$lib/interfaces/ZoneType";
 
 /**
  * Pour récupérer tous les rulesets publics, autrement dit, ceux jouables
@@ -45,8 +46,6 @@ export async function getRulesetById(id: string): Promise<RulesetType> {
   if (!docSnap.exists())
     throw new Error("There are no ruletset with this id");
 
-  // console.log(docSnap.data());
-
   const ruleset = getRulesetTypeWithQueryDocumentSnapshot(docSnap);
 
   return ruleset;
@@ -58,7 +57,7 @@ export async function getRulesetById(id: string): Promise<RulesetType> {
  * @returns les rulesets trouvés
  */
 export async function getRulesetsByIds(ids: string[]): Promise<RulesetType[]> {
-  //Dans firestore, pour la condition "where", l'opérateur "in" prend au maximum 30 éléments
+  // Dans firestore, pour la condition "where", l'opérateur "in" prend au maximum 30 éléments
   const max: number = 30;
   const rulesets: RulesetType[] = [];
 

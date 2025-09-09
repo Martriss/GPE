@@ -6,28 +6,34 @@
 
   interface InteractiveListProps {
     title: string;
+    subtitle?: string;
     extraTitleButtonName?: string;
     onClickTitleButton?: (e: Event) => void;
+    disabledExtraButton?: boolean;
     items: InteractiveListItem[];
     onItemClick?: (e: Event) => void;
   }
 
   let {
     title,
+    subtitle,
     items,
     onItemClick,
     extraTitleButtonName,
     onClickTitleButton,
+    disabledExtraButton = false,
   }: InteractiveListProps = $props();
 </script>
 
-<div>
+<div class="h-60 overflow-y-scroll">
   <div class="flex flex-row gap-8 md:gap-20 items-center mb-2">
-    <h4 class="h4 w-35">{title}</h4>
+    <h4 class="h4 w-35">{title}<span class="ps-7">{subtitle}</span></h4>
+
     {#if extraTitleButtonName && onClickTitleButton}
       <ButtonFilled
         name={extraTitleButtonName}
         handleClick={onClickTitleButton}
+        disabled={disabledExtraButton}
       />
     {/if}
   </div>
