@@ -4,7 +4,10 @@
   import CopyClipboard from "$lib/components/CopyClipboard/CopyClipboard.svelte";
   import InteractiveList from "$lib/components/List/InteractiveList.svelte";
   import ConfirmModal from "$lib/components/Modal/ConfirmModal.svelte";
+  import SelectModal from "$lib/components/Modal/SelectModal.svelte";
   import type DeckType from "$lib/interfaces/DeckType";
+  import type { SubDeckTypeForGame } from "$lib/interfaces/GameType";
+  import type { OptionType } from "$lib/interfaces/InputType";
   import type { InteractiveListItem } from "$lib/interfaces/InteractiveListType";
   import type { PlayerType } from "$lib/interfaces/PlayerType";
   import {
@@ -12,6 +15,7 @@
     extractValueFromInteractiveListItem,
     extractValueIdentityPlayer,
   } from "$lib/utils/extract";
+  import { findUserPlayerFromPlayers } from "$lib/utils/search";
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
@@ -21,7 +25,6 @@
   const connectedUser: string = data.connectedUser;
   const roomOwner: string = data.room.roomOwner;
   const amIRoomOwner: boolean = connectedUser === roomOwner;
-  let decksAvailable: DeckType[] = $state([]);
 
   const isMe = (id: string): boolean => id === connectedUser;
 
@@ -30,10 +33,12 @@
     data.room.ruleset.players.forEach((player: PlayerType) => {
       const valueId: string = extractValueIdentityPlayer(player);
       if (valueId !== "") {
+        const deck = data.room.decks.find((deck) => deck.playerId === valueId);
         array.push({
           key: valueId,
           value: valueId,
           isHighlighted: isMe(valueId),
+          ...(deck ? { extraValue: deck.name } : {}),
         });
       }
     });
@@ -161,6 +166,7 @@
       return;
     }
     data.room.viewers = extractValueFromInteractiveListItem(viewers);
+    removeMyDeckInRoomDecks(); // enlever mon deck si j'en avais choisi un en tant que joueur
 
     const response = fetch(`/api/games/${data.room.id}`, {
       method: "PUT",
@@ -193,6 +199,8 @@
     if (i !== -1) {
       viewers.splice(i, 1);
     }
+    // Enlever un deck choisi si nous étions joueur
+    removeMyDeckInRoomDecks();
     // Envoyer l'information sur le serveur
     try {
       data.room.ruleset.players = extractPlayersFromInteractiveListItem(
@@ -215,10 +223,10 @@
 
   // svelte-ignore non_reactive_update
   let dialogConfirmLeaveRoomModal: HTMLDialogElement;
-  const handleOpenModal = () => {
+  const handleOpenConfirmLeaveModal = () => {
     dialogConfirmLeaveRoomModal.showModal();
   };
-  const handleCloseModal = () => {
+  const handleCloseConfirmLeaveModal = () => {
     dialogConfirmLeaveRoomModal.close();
   };
 
@@ -230,7 +238,7 @@
 
     if (response.ok) {
       // Pas besoin de se retirer des tableaux parce que nous détruisons le salon
-      handleCloseModal();
+      handleCloseConfirmLeaveModal();
       goto("/");
     } else {
       // mettre une notification qu'un problème est survenu
@@ -240,12 +248,128 @@
   const handleLeaveRoom = () => {
     if (amIRoomOwner) {
       // Quand il y aura la synchronisation, renvoyé les autres utilisateurs encore présent si la salle d'attente est détruite
-      handleOpenModal();
+      handleOpenConfirmLeaveModal();
     } else {
       actionsBeforeLeaveRoom();
       goto("/");
     }
   };
+
+  // svelte-ignore non_reactive_update
+  let dialogSelectDeckModal: HTMLDialogElement;
+  const handleOpenSelectDeckModal = () => {
+    dialogSelectDeckModal.showModal();
+  };
+  const handleCloseSelectDeckModal = () => {
+    dialogSelectDeckModal.close();
+    valueDeckChoose = "";
+  };
+
+  let decksAvailable: DeckType[] = $state([]);
+  let optionsDecksAvailable: OptionType[] = $derived(
+    decksAvailable.map((deck: DeckType) => ({
+      label: deck.name,
+      value: deck.id ?? "",
+    })),
+  );
+  let valueDeckChoose: string = $state("");
+
+  const handleChooseUrDeck = async () => {
+    // Regarder si l'utilisateur est déjà dans la liste
+    const userPlayer = findUserPlayerFromPlayers(
+      connectedUser,
+      data.room.ruleset.players,
+    );
+    if (!userPlayer) return; // Normalement on ne devrait jamais arrivé ici
+
+    // récupérer les decks disponibles
+    const response = await fetch(
+      `/api/decks/available-for-game?rulesetId=${data.room.ruleset.id}&minSizeDeck=${userPlayer.minSizeDeck}&maxSizeDeck=${userPlayer.maxSizeDeck}`,
+      {
+        method: "GET",
+      },
+    );
+
+    if (!response.ok) {
+      // afficher une notification pour signaler l'erreur
+      return;
+    }
+    const resData = await response.json();
+    decksAvailable = resData.decks;
+
+    handleOpenSelectDeckModal();
+  };
+
+  const removeMyDeckInRoomDecks = () => {
+    const i = data.room.decks.findIndex(
+      (deck: SubDeckTypeForGame) => deck.playerId === connectedUser,
+    );
+    if (i !== -1) {
+      const elSup = data.room.decks.splice(i, 1);
+      return elSup[0];
+    }
+  };
+
+  const handleConfirmSelectDeck = () => {
+    if (!amIInPlayer || valueDeckChoose === "") return; // Normalement on ne devrait jamais arrivé ici
+
+    const deck = decksAvailable.find((deck) => deck.id === valueDeckChoose);
+    if (!deck) {
+      // afficher une notification pour signaler l'erreur
+      return;
+    }
+
+    // Supprimer l'ancien deck si l'utilisateur a déjà un deck
+    const oldDeck = removeMyDeckInRoomDecks();
+
+    // ajouter le nouveau
+    data.room.decks.push({
+      ...deck,
+      playerId: connectedUser,
+    });
+    for (let i = 0; i < players.length; i++) {
+      if (players[i].key === connectedUser) {
+        players[i].extraValue = deck.name;
+        break;
+      }
+    }
+
+    const response = fetch(`/api/games/${data.room.id}`, {
+      method: "PUT",
+      body: JSON.stringify(data.room),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    response
+      .then((r) => {
+        if (!r.ok) {
+          // Je ne passe pas par un pop car avec la "synchronisation" je ne sais pas ce sera toujours le dernier item
+          removeMyDeckInRoomDecks();
+          if (oldDeck) {
+            data.room.decks.push(oldDeck);
+          }
+
+          for (let i = 0; i < players.length; i++) {
+            if (players[i].key === connectedUser) {
+              if (oldDeck) {
+                players[i].extraValue = oldDeck.name;
+              } else {
+                delete players[i].extraValue;
+              }
+            }
+          }
+          // Mettre une notication pour prévenir qu'un problème est arrivé lors de l'ajout
+        }
+      })
+      .catch((err) => {
+        // Traiter le cas d'erreur
+      });
+
+    handleCloseSelectDeckModal();
+  };
+
   const handleStartGame = () => {}; // fonction pour lancer la partie
 </script>
 
@@ -265,8 +389,9 @@
     <ButtonFilled
       name="Lancer la partie"
       handleClick={handleStartGame}
-      disabled={!amIRoomOwner}
+      disabled={true}
     />
+    <!-- Dans le bouton au-dessus remplacer "true" par "!amIRoomOwner" quand le lien avec le ruleset sera fait-->
   </div>
   <!-- <p class="mt-4 h6">{data.room.ruleset.name}</p> -->
   <div class="flex flex-col md:mx-12 my-8 gap-10">
@@ -274,7 +399,7 @@
       title="Joueur"
       subtitle={`${nbPlayer}/${nbPlayerMax}`}
       items={players}
-      onItemClick={() => {}}
+      onItemClick={handleChooseUrDeck}
       extraTitleButtonName="Rejoindre"
       onClickTitleButton={handleJoinPlayer}
       disabledExtraButton={nbPlayer === nbPlayerMax || amIInPlayer}
@@ -293,5 +418,15 @@
   title="Quitter le salon"
   question="Si vous continuez, le salon se fermera aussi pour les autres. Voulez-vous continuer ?"
   onCloseTrue={handleConfirmLeave}
-  onCloseFalse={handleCloseModal}
+  onCloseFalse={handleCloseConfirmLeaveModal}
+/>
+<SelectModal
+  bind:dialogRef={dialogSelectDeckModal}
+  onClose={handleCloseSelectDeckModal}
+  title="Sélectionner votre deck pour jouer"
+  buttonName="Choisir celui-ci"
+  onClickButton={handleConfirmSelectDeck}
+  substitueInfo="Aucun deck n'est disponible"
+  options={optionsDecksAvailable}
+  bind:value={valueDeckChoose}
 />

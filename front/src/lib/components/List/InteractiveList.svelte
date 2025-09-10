@@ -39,7 +39,7 @@
   </div>
   <ul class="list-disc text-lg mx-8">
     {#each items as item (item.key)}
-      <li class={item.isHighlighted ? "text-secondary-500" : ""}>
+      <li class={item.isHighlighted ? "text-secondary-600" : ""}>
         <div class="flex items-center gap-4">
           {item.value}
           {#if item.isHighlighted && onItemClick}

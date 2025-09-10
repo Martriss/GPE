@@ -15,5 +15,5 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
   const gameId = await createWaitingRoom(rulesetId, userConnected);
 
-  return json({ status: 201, gameId });
+  return json({ gameId }, { status: 201 });
 }

@@ -5,6 +5,7 @@ import { getDeckTypeWithQueryDocumentSnapshot } from "../utils/mapData";
 import type { DecksByGame } from "$lib/interfaces/DeckType";
 import { getRulesetsByIds } from "./rulesetService";
 import type { PlayerType } from "$lib/interfaces/PlayerType";
+import { currentUser } from "$lib/firebase/auth";
 
 /**
  * Pour créer un deck
@@ -109,8 +110,8 @@ export async function getDecksByUserSortByGame(userId: string): Promise<DecksByG
  * @param userId optionnel, pour savoir à qui doit appartenir les decks
  * @returns les decks trouvés
  */
-export async function getDecksForGame(player: PlayerType, rulesetId: string, userId?: string) {
-  const usersId: string[] = [""]; // mettre l'id du compte officiel pour que les personnes puissent utiliser les decks mise à la disposition de tous le monde
+export async function getDecksForGame(rulesetId: string, userId?: string, minSizeDeck?: number, maxSizeDeck?: number) {
+  const usersId: string[] = []; // mettre l'id du compte officiel pour que les personnes puissent utiliser les decks mise à la disposition de tous le monde
   if (userId) usersId.push(userId);
 
   const q = query(collection(firestore, "decks"), where("rulesetId", "==", rulesetId), where("userId", "in", usersId));
@@ -119,8 +120,8 @@ export async function getDecksForGame(player: PlayerType, rulesetId: string, use
   const deckAvailable: DeckType[] = [];
   querySnapshot.forEach((doc) => {
     const deck: DeckType = getDeckTypeWithQueryDocumentSnapshot(doc);
-    if (player.minSizeDeck && deck.cards.length < player.minSizeDeck) return;
-    if (player.maxSizeDeck && deck.cards.length > player.maxSizeDeck) return;
+    if (minSizeDeck && deck.cards.length < minSizeDeck) return;
+    if (maxSizeDeck && deck.cards.length > maxSizeDeck) return;
     deckAvailable.push(deck);
   });
 
