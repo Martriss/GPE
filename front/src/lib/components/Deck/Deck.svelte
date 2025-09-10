@@ -39,7 +39,10 @@
   };
 </script>
 
-<div class="flex border rounded-lg py-2 px-2 justify-between">
+<div
+  class="flex border rounded-lg py-2 px-2 justify-between"
+  data-testid="deck"
+>
   <div class="flex gap-2 md:ms-8">
     <span>{deck.name}</span>
     <span class="italic hidden md:block opacity-80">{deck.description}</span>
@@ -56,9 +59,9 @@
     >
       <!-- Suivant si l'on se place dans un contexte de modification ou de visualisation (private/public) -->
       {#if onDelete}
-        <SquarePen />
+        <SquarePen data-testid="square-pen-icon" />
       {:else}
-        <Eye />
+        <Eye data-testid="eye-icon" />
       {/if}
     </button>
     {#if onDelete}
@@ -71,7 +74,7 @@
         <X />
       </button>
     {/if}
-    <button type="button" aria-label="duppliquer" disabled>
+    <button type="button" aria-label="dupliquer" disabled>
       <Copy />
     </button>
     <button
@@ -83,10 +86,12 @@
       <Share2 />
     </button>
   </div>
-  <CopyClipboardModal
-    bind:dialogRef={dialogModalShare}
-    onClose={handleCloseDialog}
-    title="Partager le deck"
-    valueToCopy={`${host}/decks/${deck.id}`}
-  />
+  {#if isShareable}
+    <CopyClipboardModal
+      bind:dialogRef={dialogModalShare}
+      onClose={handleCloseDialog}
+      title="Partager le deck"
+      valueToCopy={`${host}/decks/${deck.id}`}
+    />
+  {/if}
 </div>

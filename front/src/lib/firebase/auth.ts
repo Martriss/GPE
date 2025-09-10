@@ -16,7 +16,7 @@ export async function loginWithEmailAndPassword(cookies: Cookies, email: string,
     const userCredential: UserCredential = await signInWithEmailAndPassword(auth, email, password);
 
     cookies.set('user_id', userCredential.user.uid, { path: '/' });
-    console.log("User connected");
+    // console.log("User connected");
   } catch (err) {
     throw new Error("Enabled to connect the user to firebase");
   }
@@ -30,7 +30,7 @@ export async function logout(cookies: Cookies): Promise<void> {
   try {
     await signOut(auth);
     cookies.delete('user_id', { path: '/' });
-    console.log("User disconnected");
+    // console.log("User disconnected");
   } catch (err) {
     throw new Error("Enabled to disconnect the user from firebase");
   }
@@ -53,7 +53,7 @@ export async function registerWithEmailAndPassword(cookies: Cookies, email: stri
     const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
 
     cookies.set('user_id', userCredential.user.uid, { path: '/' });
-    console.log("User register and connected");
+    // console.log("User register and connected");
   } catch (err) {
     const error = err as FirebaseError;
     if (error.code === 'auth/email-already-in-use' || error.code === 'auth/invalid-email') {

@@ -43,6 +43,7 @@
   <LabelCustom {label} {required} {colorRequired} />
   <div>
     <input
+      data-testid="input-password-custom"
       type={showPwd ? "text" : "password"}
       {name}
       bind:value
@@ -62,9 +63,9 @@
         aria-label="Afficher ou masquer le mot de passe"
       >
         {#if showPwd}
-          <EyeOff />
+          <EyeOff data-testid="eye-off" />
         {:else}
-          <Eye />
+          <Eye data-testid="eye" />
         {/if}
       </button>
     </div>
