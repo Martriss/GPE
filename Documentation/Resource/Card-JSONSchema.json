@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "", // sets a URI for the schema. You can use this unique URI to refer to elements of the schema from inside the same document or from external JSON documents. https://json-schema.org/understanding-json-schema/basics#declaring-a-unique-identifier,
+  "title": "Card",
+  "description": "A card for a ruleset",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The id of a card. Expects an uuid",
+      "type": "string"
+    },
+    "rulesetId": {
+      "description": "Refers to a rule set id. Expects an uuid",
+      "type": "string"
+    },
+    "front": {
+      "type": "object",
+      "properties": {
+        "cardTypeId": {
+          "description": "Refers to a card type. Expects an uuid",
+          "type": "string"
+        },
+        "skin": {
+          "description": "The name of file .webp for the card front",
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\.]+$"
+        },
+        "properties": { // Ce n'est pas possible en JSON Schema, mais lors de l'implementation, s'assurer que dans le tableau propriété chaque objet est un attribut "name" différent
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "The name of the property on a card type",
+                "type": "string"
+              },
+              "value": {
+                "description": "The value associated to the property",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "cardTypeId",
+        "skin",
+        "properties"
+      ]
+    },
+    "back": {
+      "type": "object",
+      "properties": {
+        "cardTypeId": {
+          "description": "Refers to a card type. Expects an uuid",
+          "type": "string"
+        },
+        "skin": {
+          "description": "The name of file .webp for the card back",
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9\.]+$"
+        },
+        "properties": { // Ce n'est pas possible en JSON Schema, mais lors de l'implementation, s'assurer que dans le tableau propriété chaque objet est un attribut "name" différent
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "The name of the property on a card type",
+                "type": "string"
+              },
+              "value": {
+                "description": "The value associated to the property",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "cardTypeId",
+        "skin",
+        "properties"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "rulesetId",
+    "front"
+  ]
+}
