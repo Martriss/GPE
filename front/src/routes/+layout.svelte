@@ -11,6 +11,7 @@
 	const gameActions = [
 		{ display: "Créer une partie", href: "#" },
 		{ display: "Rejoindre une partie", href: "#" },
+		{ display: "Prototype 3D", href: "/game" },
 	];
 	const ruleActions = [
 		{ display: "Créer une règle", href: "#" },
@@ -40,7 +41,6 @@
 		<DropListNav
 			linkList={gameActions}
 			ariaLabel="Ouvrir la liste déroulante pour créer ou rejoindre une partie"
-			disabled
 		>
 			<Swords size={iconSize} />
 		</DropListNav>
