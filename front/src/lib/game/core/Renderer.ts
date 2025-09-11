@@ -3,10 +3,13 @@ import * as THREE from 'three';
 export class Renderer {
   private renderer: THREE.WebGLRenderer;
 
-  constructor() {
+  constructor(container?: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
+    
+    if (container) {
+      container.appendChild(this.renderer.domElement);
+    }
   }
 
   public setAnimationLoop(callback: () => void): void {
@@ -19,5 +22,13 @@ export class Renderer {
 
   public updateSize(): void {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  public getDomElement(): HTMLCanvasElement {
+    return this.renderer.domElement;
+  }
+
+  public dispose(): void {
+    this.renderer.dispose();
   }
 }

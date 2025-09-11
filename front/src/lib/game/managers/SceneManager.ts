@@ -3,19 +3,23 @@ import { Camera } from "../core/Camera";
 import { Scene } from "../core/Scene";
 import { Card } from "../objects/Card";
 import { GameArea } from "../objects/GameArea";
+import { MultiplayerController } from "./MultiplayerController";
 import * as THREE from "three";
 
 export class SceneManager {
   private scene: Scene;
   private camera: Camera;
   private renderer: Renderer;
-  private cards: Card[];
+  public cards: Card[];
   private gameAreas: GameArea[] = [];
+  private container: HTMLElement | null = null;
+  private multiplayerController: MultiplayerController | null = null;
 
-  constructor() {
+  constructor(container?: HTMLElement) {
+    this.container = container || null;
     this.scene = new Scene();
     this.camera = new Camera();
-    this.renderer = new Renderer();
+    this.renderer = new Renderer(container);
 
     // Create game areas
     // Main area in the center
@@ -78,10 +82,11 @@ export class SceneManager {
     this.scene.add(discardPileArea.mesh);
     discardPileArea.mesh.userData.gameArea = discardPileArea;
 
-    // Initialize cards
+    // Initialize cards with deterministic IDs
     this.cards = Array.from(
       { length: 15 },
-      () => new Card(1, 1.4, 0.01, "", "", this.camera.camera),
+      (_, index) =>
+        new Card(1, 1.4, 0.01, "", "", this.camera.camera, `card_${index}`),
     );
 
     // Distribute cards among the areas
@@ -198,6 +203,15 @@ export class SceneManager {
       // Calculate position relative to the new area
       const localPosition = worldPosition.clone().sub(targetArea.mesh.position);
       targetArea.addCard(card, localPosition.x, localPosition.y);
+    }
+
+    // Sync with multiplayer if enabled
+    if (this.multiplayerController) {
+      this.multiplayerController.moveCard(card.getId(), {
+        x: card.mesh.position.x,
+        y: card.mesh.position.y,
+        z: card.mesh.position.z,
+      });
     }
   }
 
@@ -317,5 +331,96 @@ export class SceneManager {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Get the renderer's DOM element for mounting in Svelte
+   */
+  public getDomElement(): HTMLCanvasElement {
+    return this.renderer.getDomElement();
+  }
+
+  /**
+   * Initialize multiplayer synchronization for the game
+   */
+  public initializeMultiplayer(
+    roomId: string,
+    playerId: string,
+    isHost: boolean = false,
+  ): void {
+    try {
+      this.multiplayerController = new MultiplayerController(
+        this,
+        roomId,
+        playerId,
+        isHost,
+      );
+    } catch (error) {
+      console.error("Failed to initialize multiplayer controller:", error);
+    }
+  }
+
+  /**
+   * Disable multiplayer synchronization
+   */
+  public disableMultiplayer(): void {
+    if (this.multiplayerController) {
+      this.multiplayerController.dispose();
+      this.multiplayerController = null;
+    }
+  }
+
+  /**
+   * Handle card flip with multiplayer sync
+   */
+  public flipCard(card: Card): void {
+    card.flip();
+
+    // Sync with multiplayer if enabled
+    if (this.multiplayerController) {
+      // Use a timeout to let the flip animation complete
+      setTimeout(() => {
+        this.multiplayerController!.flipCard(card.getId(), card.isFlipped());
+      }, 100);
+    }
+  }
+
+  /**
+   * Get all cards in the scene
+   */
+  public getAllCards(): Card[] {
+    return [...this.cards];
+  }
+
+  /**
+   * Find a card by its ID
+   */
+  public getCardById(cardId: string): Card | undefined {
+    return this.cards.find((card) => card.getId() === cardId);
+  }
+
+  /**
+   * Cleanup method for component unmounting
+   */
+  public dispose(): void {
+    // Stop animation loop
+    this.renderer.setAnimationLoop(() => {});
+
+    // Dispose multiplayer controller
+    if (this.multiplayerController) {
+      this.multiplayerController.dispose();
+    }
+
+    // Dispose of all cards
+    this.cards.forEach((card) => card.dispose());
+
+    // Dispose of all game areas
+    this.gameAreas.forEach((area) => area.dispose());
+
+    // Remove event listeners
+    window.removeEventListener("resize", this.onWindowResize.bind(this));
+
+    // Dispose of renderer
+    this.renderer.dispose();
   }
 }

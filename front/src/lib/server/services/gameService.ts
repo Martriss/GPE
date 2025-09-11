@@ -1,7 +1,14 @@
 import type { SubRulesetTypeForGame } from "$lib/interfaces/GameType";
 import type GameType from "$lib/interfaces/GameType";
 import { generateRandomName } from "$lib/utils/random";
-import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { getAllRulesetPlayers } from "./playerService";
 import { getRulesetById } from "./rulesetService";
 import { getAllRulesetZones } from "./zoneService";
@@ -14,7 +21,10 @@ import { getGameTypeWithQueryDocumentSnapshot } from "../utils/mapData";
  * @param userId propriétaire de la salle d'attente
  * @returns l'id de la salle d'attente nouvellement créée
  */
-export async function createWaitingRoom(rulesetId: string, userId: string): Promise<string> {
+export async function createWaitingRoom(
+  rulesetId: string,
+  userId: string,
+): Promise<string> {
   // Récupération des données d'un ruleset
   const ruleset = await getRulesetById(rulesetId);
   ruleset.zones = await getAllRulesetZones(rulesetId);
@@ -28,16 +38,16 @@ export async function createWaitingRoom(rulesetId: string, userId: string): Prom
     code: "", // temporaire, voir plus tard pour aussi avoir un generateur de code
     decks: [],
     isPlaying: false,
-    viewers: []
+    viewers: [],
   };
 
   const docRef = await addDoc(collection(firestore, "games"), {
-    ...game
+    ...game,
   });
 
   await updateDoc(doc(firestore, "games", docRef.id), {
     ...game,
-    code: docRef.id
+    code: docRef.id,
   });
 
   return docRef.id;
@@ -60,8 +70,7 @@ export async function deleteGameById(roomId: string): Promise<void> {
 export async function getWaitingRoomById(roomId: string): Promise<GameType> {
   const docSnap = await getDoc(doc(firestore, "games", roomId));
 
-  if (!docSnap.exists())
-    throw new Error("There are no room with this id");
+  if (!docSnap.exists()) throw new Error("There are no room with this id");
 
   const room: GameType = getGameTypeWithQueryDocumentSnapshot(docSnap);
 
@@ -72,14 +81,34 @@ export async function getWaitingRoomById(roomId: string): Promise<GameType> {
 }
 
 /**
- * Pour mettre à jour tout un objet GameType 
+ * Pour récupérer une partie en cours via son id
+ * @param roomId id de salle. Attend une string
+ * @returns la partie en cours
+ * @throws Si aucune salle n'a été trouvé à partir de l'id ou Si la partie n'a pas encore commencé
+ */
+export async function getGameRoomById(roomId: string): Promise<GameType> {
+  const docSnap = await getDoc(doc(firestore, "games", roomId));
+
+  if (!docSnap.exists()) throw new Error("There are no room with this id");
+
+  const room: GameType = getGameTypeWithQueryDocumentSnapshot(docSnap);
+
+  if (!room.isPlaying)
+    throw new Error(
+      "Game has not started yet - Please wait in the waiting room",
+    );
+
+  return room;
+}
+
+/**
+ * Pour mettre à jour tout un objet GameType
  * @param game la partie avec ses les nouvelles valeurs
  */
 export async function updateGame(game: GameType): Promise<void> {
-  if (!game.id)
-    throw new Error("id game must be present");
+  if (!game.id) throw new Error("id game must be present");
 
   await updateDoc(doc(firestore, "games", game.id), {
-    ...game
+    ...game,
   });
 }

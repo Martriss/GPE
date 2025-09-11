@@ -9,8 +9,8 @@
 	let { data, children }: LayoutProps = $props();
 
 	const gameActions = [
-		{ display: "Créer une partie", href: "#" },
-		{ display: "Rejoindre une partie", href: "#" },
+		{ display: "Créer une partie", href: "/" },
+		{ display: "Rejoindre une partie", href: "/" },
 	];
 	const ruleActions = [
 		{ display: "Créer une règle", href: "#" },
@@ -40,7 +40,6 @@
 		<DropListNav
 			linkList={gameActions}
 			ariaLabel="Ouvrir la liste déroulante pour créer ou rejoindre une partie"
-			disabled
 		>
 			<Swords size={iconSize} />
 		</DropListNav>

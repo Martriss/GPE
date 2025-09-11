@@ -27,6 +27,7 @@
 		"@testing-library/jest-dom": "^6.8.0",
 		"@testing-library/svelte": "^5.2.8",
 		"@testing-library/user-event": "^14.6.1",
+		"@types/three": "^0.175.0",
 		"jsdom": "^26.1.0",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
@@ -37,6 +38,7 @@
 	},
 	"dependencies": {
 		"@lucide/svelte": "^0.511.0",
-		"firebase": "^11.8.0"
+		"firebase": "^11.8.0",
+		"three": "^0.157.0"
 	}
 }
