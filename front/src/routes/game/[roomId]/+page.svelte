@@ -3,13 +3,6 @@
     import type { PageData } from "./$types";
 
     let { data }: { data: PageData } = $props();
-
-    // Debug logs pour vérifier les données reçues
-    console.log("🔍 Debug - Page data:", data);
-    console.log("🔍 Debug - Room:", data.room);
-    console.log("🔍 Debug - Ruleset:", data.room?.ruleset);
-    console.log("🔍 Debug - Ruleset ID:", data.room?.ruleset?.id);
-    console.log("🔍 Debug - Ruleset ID type:", typeof data.room?.ruleset?.id);
 </script>
 
 <svelte:head>

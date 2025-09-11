@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 export class Renderer {
   private renderer: THREE.WebGLRenderer;
@@ -6,7 +6,7 @@ export class Renderer {
   constructor(container?: HTMLElement) {
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    
+
     if (container) {
       container.appendChild(this.renderer.domElement);
     }

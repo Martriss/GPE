@@ -41,9 +41,6 @@ export class SceneManager {
    */
   private initializeWithRulesetData(rulesetData: any): void {
     try {
-      console.log(`🎮 Loading game configuration from lobby data`);
-      console.log("📋 Ruleset data:", rulesetData);
-
       // Convert ruleset data to GameConfig
       this.gameConfig = ConfigLoader.loadFromRulesetData(rulesetData);
 
@@ -56,18 +53,12 @@ export class SceneManager {
         throw new Error("Invalid configuration from lobby data");
       }
 
-      console.log(`✅ Configuration loaded successfully from lobby`);
-      console.log(
-        `📊 ${this.gameConfig.zones.length} zones for ${this.gameConfig.players.length} players`,
-      );
-
       // Create game areas and cards
       this.createGameAreasFromConfig();
       this.createAndDistributeCards();
       this.initializeCardCallbacks();
     } catch (error) {
-      console.error("❌ Error loading ruleset from lobby data:", error);
-      console.log("🔄 Falling back to default configuration");
+      console.error("Error loading ruleset from lobby data:", error);
       this.initializeWithDefaultConfig();
     }
   }
@@ -76,8 +67,6 @@ export class SceneManager {
    * Initialize with default configuration if no ruleset or error
    */
   private initializeWithDefaultConfig(): void {
-    console.log("🎯 Using default game configuration");
-
     try {
       this.gameConfig = ConfigLoader.createDefaultConfig();
 
@@ -89,11 +78,7 @@ export class SceneManager {
       this.createAndDistributeCards();
       this.initializeCardCallbacks();
     } catch (error) {
-      console.error(
-        "❌ Fatal error: cannot create default configuration",
-        error,
-      );
-      // Create minimal fallback
+      console.error("Fatal error: cannot create default configuration", error);
       this.createMinimalFallback();
     }
   }
@@ -102,8 +87,6 @@ export class SceneManager {
    * Create a minimal fallback scene if everything else fails
    */
   private createMinimalFallback(): void {
-    console.log("🆘 Creating minimal fallback scene");
-
     this.gameConfig = {
       zones: [
         {

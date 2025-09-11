@@ -19,8 +19,6 @@ export class ConfigLoader {
    * Convertit directement des données de ruleset en GameConfig (depuis lobby)
    */
   public static loadFromRulesetData(rulesetData: any): GameConfig {
-    console.log("🔍 Debug - Converting ruleset data:", rulesetData);
-
     // Extraire les clés des joueurs
     const players = this.extractPlayerKeys(
       this.normalizePlayers(rulesetData.players),
@@ -28,9 +26,6 @@ export class ConfigLoader {
 
     // Traiter les zones
     const zones = this.processZones(rulesetData.zones || [], players);
-
-    console.log("✅ Converted ruleset data to GameConfig");
-    console.log(`📊 ${zones.length} zones for ${players.length} players`);
 
     return {
       zones,
@@ -43,10 +38,6 @@ export class ConfigLoader {
    */
   public static async loadFromFirebase(rulesetId: string): Promise<GameConfig> {
     try {
-      console.log("🔍 Debug - Attempting to load ruleset from Firebase");
-      console.log("🔍 Debug - RulesetId:", rulesetId);
-
-      // Récupérer le document complet depuis Firebase (pas via le service qui ne mappe que partiellement)
       const rulesetRef = doc(firestore, "rulesets", rulesetId);
       const docSnap = await getDoc(rulesetRef);
 
@@ -55,9 +46,6 @@ export class ConfigLoader {
       }
 
       const rawData = docSnap.data();
-      console.log("🔍 Debug - Raw data from Firebase:", rawData);
-      console.log("🔍 Debug - Players data:", rawData?.players);
-      console.log("🔍 Debug - Zones data:", rawData?.zones);
 
       // Convertir vers notre format Ruleset
       const convertedRuleset: Ruleset = {
@@ -73,23 +61,12 @@ export class ConfigLoader {
         zones: (rawData?.zones || []) as GameZone[],
       };
 
-      console.log("🔍 Debug - Converted players:", convertedRuleset.players);
-      console.log(
-        "🔍 Debug - Converted zones count:",
-        convertedRuleset.zones?.length,
-      );
-
       const normalizedData: RulesetFile = {
         ruleset: convertedRuleset,
       };
 
       return this.loadFromRuleset(normalizedData);
     } catch (error) {
-      console.error("❌ Error loading ruleset from Firebase:", error);
-      console.error("🔍 Debug - Error details:", {
-        message: error instanceof Error ? error.message : String(error),
-        rulesetId,
-      });
       throw error;
     }
   }
@@ -136,8 +113,6 @@ export class ConfigLoader {
    * Normalise les données des joueurs pour s'adapter aux différents formats
    */
   private static normalizePlayers(playersData: any): any[] {
-    console.log("🔍 Debug - normalizePlayers called with:", playersData);
-
     // Si c'est déjà un array, le retourner tel quel
     if (Array.isArray(playersData)) {
       return playersData;
@@ -145,7 +120,6 @@ export class ConfigLoader {
 
     // Si c'est undefined ou null, retourner un array par défaut
     if (!playersData) {
-      console.log("🔄 Players data is empty, using default players");
       return [
         { albert: "", minSizeDeck: 60, lifePoint: 20 },
         { lea: "", minSizeDeck: 60, lifePoint: 20 },
@@ -154,12 +128,10 @@ export class ConfigLoader {
 
     // Si c'est un objet, essayer de le convertir en array
     if (typeof playersData === "object") {
-      console.log("🔄 Converting players object to array");
       return Object.values(playersData);
     }
 
     // Fallback: créer un array par défaut
-    console.warn("⚠️ Unable to parse players data, using fallback");
     return [
       { albert: "", minSizeDeck: 60, lifePoint: 20 },
       { lea: "", minSizeDeck: 60, lifePoint: 20 },
@@ -172,13 +144,8 @@ export class ConfigLoader {
   private static extractPlayerKeys(players: any[]): string[] {
     const playerKeys: string[] = [];
 
-    console.log("🔍 Debug - extractPlayerKeys called with:", players);
-    console.log("🔍 Debug - players type:", typeof players);
-    console.log("🔍 Debug - is array:", Array.isArray(players));
-
     // Vérifier que players est un array
     if (!Array.isArray(players)) {
-      console.error("❌ Players is not an array:", players);
       return ["player1", "player2"]; // Fallback
     }
 

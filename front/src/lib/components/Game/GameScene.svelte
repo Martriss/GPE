@@ -16,8 +16,6 @@
 
     onMount(() => {
         if (container) {
-            console.log("🎮 GameScene initializing with ruleset:", ruleset);
-
             sceneManager = new SceneManager(container, ruleset);
 
             // Initialize multiplayer if room and user info are provided
