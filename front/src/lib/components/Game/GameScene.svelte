@@ -30,11 +30,15 @@
   .game-scene-container {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     overflow: hidden;
+    position: relative;
+    z-index: 1;
   }
 
   :global(.game-scene-container canvas) {
     display: block;
     width: 100% !important;
     height: 100% !important;
+    position: relative;
+    z-index: 1;
   }
 </style>

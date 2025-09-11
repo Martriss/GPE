@@ -73,6 +73,7 @@
     position: absolute;
     border: solid 1px;
     border-radius: 0.5em;
+    z-index: 1000;
   }
   .dropdown-child a {
     text-decoration: none;
