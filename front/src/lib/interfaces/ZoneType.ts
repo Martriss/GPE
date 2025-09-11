@@ -1,6 +1,7 @@
 import type CardType from "./CardType";
 
 export default interface ZoneType {
+  id?: string;
   name: string;
   height: number;
   width: number;

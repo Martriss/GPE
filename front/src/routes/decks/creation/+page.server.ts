@@ -1,13 +1,13 @@
 import type { Actions, PageServerLoad } from './$types';
-import { getAllRulesets } from '$lib/server/services/rulesetService';
 import { createUserDeck } from '$lib/server/services/deckService';
 import type DeckType from '$lib/interfaces/DeckType';
 import { fail, redirect } from '@sveltejs/kit';
 import { error } from 'console';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ parent }) => {
+  const { playableRulesets } = await parent();
   return {
-    rulesets: await getAllRulesets()
+    rulesets: playableRulesets
     // rulesets: [{ uuid: 'zhPZBo2kuOXpxdXMuXwk', name: "Magic The Gathering" }] // mock pour le développement afin d'éviter le nombre de lecture
   };
 };

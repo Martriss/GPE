@@ -5,7 +5,8 @@ import Page from './+page.svelte';
 
 describe('/+page.svelte', () => {
   test('should render h1', () => {
-    render(Page);
+    const props = { data: { rulesets: [{ uuid: 'zhPZBo2kuOXpxdXMuXwk', name: "Magic The Gathering" }] } }
+    render(Page, props);
     expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
   });
 });

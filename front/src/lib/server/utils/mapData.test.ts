@@ -37,17 +37,49 @@ describe("getDeckTypeWithQueryDocumentSnapshot", () => {
 });
 
 describe("getRulesetTypeWithQueryDocumentSnapshot", () => {
-  it("should return a RulesetType from a QueryDocumentSnapshot<DocumentData, DocumentData>", () => {
+  it("should return a RulesetType without description from a QueryDocumentSnapshot<DocumentData, DocumentData>", () => {
     const data = {
-      name: "my name ruleset"
+      name: "my name ruleset",
+      isPublic: true,
+      isDraft: false,
+      createdBy: "created by"
     };
     const doc = {
       id: "my id",
       data: () => data
     } as unknown as QueryDocumentSnapshot<DocumentData, DocumentData>;
     const expectResult: RulesetType = {
-      uuid: "my id",
-      name: "my name ruleset"
+      id: "my id",
+      name: "my name ruleset",
+      isDraft: false,
+      isPublic: true,
+      createdBy: "created by"
+    };
+
+    const result = getRulesetTypeWithQueryDocumentSnapshot(doc);
+
+    expect(result).toEqual(expectResult);
+  });
+
+  it("should return a RulesetType with description from a QueryDocumentSnapshot<DocumentData, DocumentData>", () => {
+    const data = {
+      name: "my name ruleset",
+      isPublic: true,
+      isDraft: false,
+      createdBy: "created by",
+      description: "my description"
+    };
+    const doc = {
+      id: "my id",
+      data: () => data
+    } as unknown as QueryDocumentSnapshot<DocumentData, DocumentData>;
+    const expectResult: RulesetType = {
+      id: "my id",
+      name: "my name ruleset",
+      isDraft: false,
+      isPublic: true,
+      createdBy: "created by",
+      description: "my description"
     };
 
     const result = getRulesetTypeWithQueryDocumentSnapshot(doc);

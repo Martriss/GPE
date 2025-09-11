@@ -5,12 +5,12 @@ import { render, screen } from "@testing-library/svelte";
 describe(SelectCustom.name, () => {
   const defaultOptions = [
     {
-      name: "my name1",
-      uuid: "my uuid1"
+      label: "my name1",
+      value: "my uuid1"
     },
     {
-      name: "my name2",
-      uuid: "my uuid2"
+      label: "my name2",
+      value: "my uuid2"
     }
   ];
   const defaultGivenProps = {
