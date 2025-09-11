@@ -6,16 +6,19 @@
         roomId?: string;
         userId?: string;
         isHost?: boolean;
+        ruleset?: any;
     }
 
-    let { roomId, userId, isHost = false }: GameSceneProps = $props();
+    let { roomId, userId, isHost = false, ruleset }: GameSceneProps = $props();
 
     let container: HTMLDivElement;
     let sceneManager: SceneManager | null = null;
 
     onMount(() => {
         if (container) {
-            sceneManager = new SceneManager(container);
+            console.log("🎮 GameScene initializing with ruleset:", ruleset);
+
+            sceneManager = new SceneManager(container, ruleset);
 
             // Initialize multiplayer if room and user info are provided
             if (roomId && userId) {

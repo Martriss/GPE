@@ -4,6 +4,8 @@ import { Scene } from "../core/Scene";
 import { Card } from "../objects/Card";
 import { GameArea } from "../objects/GameArea";
 import { MultiplayerController } from "./MultiplayerController";
+import { ConfigLoader } from "./ConfigLoader";
+import type { GameConfig, ZoneConfig } from "../../interfaces/Ruleset";
 import * as THREE from "three";
 
 export class SceneManager {
@@ -14,113 +16,258 @@ export class SceneManager {
   private gameAreas: GameArea[] = [];
   private container: HTMLElement | null = null;
   private multiplayerController: MultiplayerController | null = null;
+  private gameConfig: GameConfig | null = null;
 
-  constructor(container?: HTMLElement) {
+  constructor(container?: HTMLElement, rulesetData?: any) {
     this.container = container || null;
     this.scene = new Scene();
     this.camera = new Camera();
     this.renderer = new Renderer(container);
+    this.cards = [];
 
-    // Create game areas
-    // Main area in the center
+    // Initialize the scene
+    if (rulesetData && rulesetData.zones && rulesetData.zones.length > 0) {
+      this.initializeWithRulesetData(rulesetData);
+    } else {
+      this.initializeWithDefaultConfig();
+    }
+
+    this.setupEventListeners();
+    this.renderer.setAnimationLoop(this.animate.bind(this));
+  }
+
+  /**
+   * Initialize scene with ruleset data directly from lobby
+   */
+  private initializeWithRulesetData(rulesetData: any): void {
+    try {
+      console.log(`🎮 Loading game configuration from lobby data`);
+      console.log("📋 Ruleset data:", rulesetData);
+
+      // Convert ruleset data to GameConfig
+      this.gameConfig = ConfigLoader.loadFromRulesetData(rulesetData);
+
+      // Validate configuration
+      if (
+        !this.gameConfig ||
+        !this.gameConfig.zones ||
+        this.gameConfig.zones.length === 0
+      ) {
+        throw new Error("Invalid configuration from lobby data");
+      }
+
+      console.log(`✅ Configuration loaded successfully from lobby`);
+      console.log(
+        `📊 ${this.gameConfig.zones.length} zones for ${this.gameConfig.players.length} players`,
+      );
+
+      // Create game areas and cards
+      this.createGameAreasFromConfig();
+      this.createAndDistributeCards();
+      this.initializeCardCallbacks();
+    } catch (error) {
+      console.error("❌ Error loading ruleset from lobby data:", error);
+      console.log("🔄 Falling back to default configuration");
+      this.initializeWithDefaultConfig();
+    }
+  }
+
+  /**
+   * Initialize with default configuration if no ruleset or error
+   */
+  private initializeWithDefaultConfig(): void {
+    console.log("🎯 Using default game configuration");
+
+    try {
+      this.gameConfig = ConfigLoader.createDefaultConfig();
+
+      if (!this.gameConfig || !this.gameConfig.zones) {
+        throw new Error("Failed to create default configuration");
+      }
+
+      this.createGameAreasFromConfig();
+      this.createAndDistributeCards();
+      this.initializeCardCallbacks();
+    } catch (error) {
+      console.error(
+        "❌ Fatal error: cannot create default configuration",
+        error,
+      );
+      // Create minimal fallback
+      this.createMinimalFallback();
+    }
+  }
+
+  /**
+   * Create a minimal fallback scene if everything else fails
+   */
+  private createMinimalFallback(): void {
+    console.log("🆘 Creating minimal fallback scene");
+
+    this.gameConfig = {
+      zones: [
+        {
+          name: "main",
+          width: 10,
+          height: 6,
+          position: { x: 0, y: 0, z: 0 },
+          backgroundColor: "#2d572c",
+          owners: [],
+          displayMode: "free",
+          areCardsVisible: true,
+        },
+      ],
+      players: ["player1", "player2"],
+    };
+
+    // Create just one simple area
     const mainArea = new GameArea(
       10,
       6,
       new THREE.Vector3(0, 0, 0),
       0x2d572c,
-      "MainArea",
+      "main",
     );
     this.gameAreas.push(mainArea);
     this.scene.add(mainArea.mesh);
     mainArea.mesh.userData.gameArea = mainArea;
+    mainArea.setOnCardAddedCallback(this.handleCardAdded.bind(this));
 
-    // Player hand area at the bottom
-    const playerArea = new GameArea(
-      8,
-      3,
-      new THREE.Vector3(0, -4, 0),
-      0x1a3a66,
-      "PlayerArea",
-    );
-    this.gameAreas.push(playerArea);
-    this.scene.add(playerArea.mesh);
-    playerArea.mesh.userData.gameArea = playerArea;
-
-    // Opponent area at the top
-    const opponentArea = new GameArea(
-      8,
-      3,
-      new THREE.Vector3(0, 4, 0),
-      0x661a1a,
-      "OpponentArea",
-    );
-    this.gameAreas.push(opponentArea);
-    this.scene.add(opponentArea.mesh);
-    opponentArea.mesh.userData.gameArea = opponentArea;
-
-    // Draw pile on the right
-    const drawPileArea = new GameArea(
-      2,
-      3,
-      new THREE.Vector3(6, 0, 0),
-      0x2d2d2d,
-      "DrawPileArea",
-    );
-    this.gameAreas.push(drawPileArea);
-    this.scene.add(drawPileArea.mesh);
-    drawPileArea.mesh.userData.gameArea = drawPileArea;
-
-    // Discard pile on the left
-    const discardPileArea = new GameArea(
-      2,
-      3,
-      new THREE.Vector3(-6, 0, 0),
-      0x4d2d2d,
-      "DiscardPileArea",
-    );
-    this.gameAreas.push(discardPileArea);
-    this.scene.add(discardPileArea.mesh);
-    discardPileArea.mesh.userData.gameArea = discardPileArea;
-
-    // Initialize cards with deterministic IDs
+    // Create minimal cards
     this.cards = Array.from(
-      { length: 15 },
+      { length: 5 },
+      (_, index) =>
+        new Card(1, 1.4, 0.01, "", "", this.camera.camera, `card_${index}`),
+    );
+
+    // Add cards to main area
+    for (let i = 0; i < this.cards.length; i++) {
+      mainArea.addCard(this.cards[i], i * 2 - 4, 0);
+    }
+
+    this.initializeCardCallbacks();
+  }
+
+  /**
+   * Create game areas from the loaded configuration
+   */
+  private createGameAreasFromConfig(): void {
+    if (!this.gameConfig) return;
+
+    for (const zoneConfig of this.gameConfig.zones) {
+      this.createGameAreaFromConfig(zoneConfig);
+    }
+  }
+
+  /**
+   * Create a GameArea from a ZoneConfig
+   */
+  private createGameAreaFromConfig(config: ZoneConfig): void {
+    const position = new THREE.Vector3(
+      config.position.x,
+      config.position.y,
+      config.position.z,
+    );
+    const color = this.parseColor(config.backgroundColor);
+
+    const gameArea = new GameArea(
+      config.width,
+      config.height,
+      position,
+      color,
+      config.name,
+    );
+
+    this.gameAreas.push(gameArea);
+    this.scene.add(gameArea.mesh);
+    gameArea.mesh.userData.gameArea = gameArea;
+
+    // Set up event handlers
+    gameArea.setOnCardAddedCallback(this.handleCardAdded.bind(this));
+  }
+
+  /**
+   * Parse color string to THREE.js color format
+   */
+  private parseColor(colorString: string): THREE.ColorRepresentation {
+    if (colorString.startsWith("#")) {
+      return colorString;
+    } else if (colorString.startsWith("0x")) {
+      return parseInt(colorString, 16);
+    }
+    // Default color if parsing fails
+    return 0x2d572c;
+  }
+
+  /**
+   * Create cards and distribute them based on initialization configuration
+   */
+  private createAndDistributeCards(): void {
+    if (!this.gameConfig) return;
+
+    // Calculate total cards needed
+    const totalCardsNeeded = this.gameConfig.zones.reduce((total, zone) => {
+      return total + (zone.initializationCards?.count || 0);
+    }, 0);
+
+    // Create cards with deterministic IDs
+    const cardCount = Math.max(totalCardsNeeded, 15); // Minimum 15 cards
+    this.cards = Array.from(
+      { length: cardCount },
       (_, index) =>
         new Card(1, 1.4, 0.01, "", "", this.camera.camera, `card_${index}`),
     );
 
     // Distribute cards among the areas
-    // Add cards to player area
-    for (let i = 0; i < 5; i++) {
-      const card = this.cards[i];
-      const posX = i * 1.5 - 3;
-      playerArea.addCard(card, posX, 0);
+    let cardIndex = 0;
+
+    for (const zoneConfig of this.gameConfig.zones) {
+      const gameArea = this.findGameAreaByName(zoneConfig.name);
+      if (!gameArea || !zoneConfig.initializationCards) continue;
+
+      const { count } = zoneConfig.initializationCards;
+
+      // Add specified number of cards to this area
+      for (let i = 0; i < count && cardIndex < this.cards.length; i++) {
+        const card = this.cards[cardIndex++];
+
+        // Position cards based on display mode
+        let posX = 0,
+          posY = 0;
+
+        if (zoneConfig.displayMode === "list") {
+          // Arrange in a line
+          posX = (i - count / 2) * 1.5;
+        } else if (zoneConfig.displayMode === "stack") {
+          // Stack on top of each other
+          posY = i * 0.02;
+        }
+        // For 'free' mode, just place at center
+
+        gameArea.addCard(card, posX, posY);
+      }
     }
 
-    // Add cards to main area
-    for (let i = 5; i < 8; i++) {
-      const card = this.cards[i];
-      const posX = (i - 5) * 2 - 2;
-      mainArea.addCard(card, posX, 0);
+    // If there are remaining cards, distribute them to battlefield or main area
+    if (cardIndex < this.cards.length) {
+      const mainArea =
+        this.findGameAreaByName("battlefield") || this.gameAreas[0];
+      if (mainArea) {
+        while (cardIndex < this.cards.length) {
+          const card = this.cards[cardIndex++];
+          const posX = (cardIndex % 5) * 2 - 4;
+          const posY = Math.floor(cardIndex / 5) * 0.5;
+          mainArea.addCard(card, posX, posY);
+        }
+      }
     }
+  }
 
-    // Add cards to opponent area
-    for (let i = 8; i < 12; i++) {
-      const card = this.cards[i];
-      const posX = (i - 8) * 1.5 - 2;
-      opponentArea.addCard(card, posX, 0);
-    }
-
-    // Add cards to draw pile
-    drawPileArea.addCard(this.cards[12], 0, 0);
-
-    // Add cards to discard pile
-    discardPileArea.addCard(this.cards[13], 0, 0.1);
-    discardPileArea.addCard(this.cards[14], 0.1, 0.2);
-
-    this.setupEventListeners();
-    this.initializeCardCallbacks(); // Initialize callbacks for all existing cards
-    this.renderer.setAnimationLoop(this.animate.bind(this));
+  /**
+   * Find a game area by name
+   */
+  private findGameAreaByName(name: string): GameArea | undefined {
+    return this.gameAreas.find((area) => area.getName() === name);
   }
 
   private setupEventListeners(): void {
@@ -130,10 +277,7 @@ export class SceneManager {
     for (const gameArea of this.gameAreas) {
       // Ensure callbacks are properly bound to this instance
       const boundAddedCallback = this.handleCardAdded.bind(this);
-      // const boundRemovedCallback = this.handleCardRemoved.bind(this);
-
       gameArea.setOnCardAddedCallback(boundAddedCallback);
-      // gameArea.setOnCardRemovedCallback(boundRemovedCallback);
     }
   }
 
@@ -148,7 +292,6 @@ export class SceneManager {
       for (const card of cards) {
         // Make sure we bind the callback to this SceneManager instance
         const boundDropCallback = this.handleCardDrop.bind(this);
-
         // Set the callback for the card
         card.setDropCallback(boundDropCallback);
       }
@@ -177,13 +320,6 @@ export class SceneManager {
     // Set the callback for the card
     card.setDropCallback(boundDropCallback);
   }
-
-  /**
-   * Handle when a card is removed from a game area
-   */
-  // private handleCardRemoved(card: Card, area: GameArea): void {
-  //   // This can be extended in the future to handle card removal logic
-  // }
 
   /**
    * Handle when a card is dropped after dragging
@@ -314,7 +450,6 @@ export class SceneManager {
 
     // Set up event handlers
     gameArea.setOnCardAddedCallback(this.handleCardAdded.bind(this));
-    // gameArea.setOnCardRemovedCallback(this.handleCardRemoved.bind(this));
 
     return gameArea;
   }
@@ -397,6 +532,13 @@ export class SceneManager {
    */
   public getCardById(cardId: string): Card | undefined {
     return this.cards.find((card) => card.getId() === cardId);
+  }
+
+  /**
+   * Get the current game configuration
+   */
+  public getGameConfiguration(): GameConfig | null {
+    return this.gameConfig;
   }
 
   /**
