@@ -9,9 +9,8 @@
 	let { data, children }: LayoutProps = $props();
 
 	const gameActions = [
-		{ display: "Créer une partie", href: "#" },
-		{ display: "Rejoindre une partie", href: "#" },
-		{ display: "Prototype 3D", href: "/game" },
+		{ display: "Créer une partie", href: "/" },
+		{ display: "Rejoindre une partie", href: "/" },
 	];
 	const ruleActions = [
 		{ display: "Créer une règle", href: "#" },

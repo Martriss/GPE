@@ -10,6 +10,7 @@ export type CardDropCallback = (
 export class Card {
   public mesh: THREE.Group;
   private card: THREE.Mesh;
+  private id: string;
   private isDragging: boolean = false;
   private dragPlane: THREE.Plane = new THREE.Plane();
   private dragOffset: THREE.Vector3 = new THREE.Vector3();
@@ -35,8 +36,10 @@ export class Card {
     frontTexture: string = "",
     backTexture: string = "",
     camera: THREE.Camera,
+    id?: string
   ) {
     this.camera = camera;
+    this.id = id || Math.random().toString(36).substr(2, 9);
     this.mesh = new THREE.Group();
 
     // Create card geometry
@@ -342,5 +345,20 @@ export class Card {
     const position = new THREE.Vector3();
     this.mesh.getWorldPosition(position);
     return position;
+  }
+  
+  /**
+   * Get the card's unique ID
+   */
+  public getId(): string {
+    return this.id;
+  }
+  
+  /**
+   * Check if the card is currently flipped (showing back face)
+   */
+  public isFlipped(): boolean {
+    // A card is flipped if its Y rotation is approximately π (180 degrees)
+    return Math.abs(this.mesh.rotation.y - Math.PI) < 0.1;
   }
 }

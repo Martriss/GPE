@@ -7,6 +7,9 @@
   import type { PageProps } from "./$types";
 
   const { data }: PageProps = $props();
+  
+  console.log("Page data:", data);
+  console.log("Rulesets:", data.rulesets);
 
   // svelte-ignore non_reactive_update
   let dialogRefCreateWaitingRoomGame: HTMLDialogElement;
@@ -16,15 +19,19 @@
       value: ruleset.id,
     };
   });
+  console.log("Options mapped:", options);
+  
   let valueInputCreateWaitingRoomGame: string = $state(
     options.length > 0 ? options[0].value : "",
   );
+  console.log("Initial value:", valueInputCreateWaitingRoomGame);
 
   // svelte-ignore non_reactive_update
   let dialogRefJoinWaitingRoomGame: HTMLDialogElement;
   let valueInputJoinWaitingRoomGame: string = $state("");
 
   const handleOpenCreateWaitingRoomGameModal = () => {
+    console.log("Opening create waiting room modal");
     dialogRefCreateWaitingRoomGame.showModal();
   };
   const handleCloseCreateWaitingRoomGameModal = () => {
@@ -41,23 +48,44 @@
     valueInputJoinWaitingRoomGame = "";
   };
 
-  const createWaitingRoom = (e: Event) => {
-    const response = fetch("/api/games/", {
-      method: "POST",
-      body: JSON.stringify({ rulesetId: valueInputCreateWaitingRoomGame }),
+  const createWaitingRoom = async (e: Event) => {
+    console.log("createWaitingRoom called with:", { 
+      rulesetId: valueInputCreateWaitingRoomGame,
+      options: options.length,
+      event: e 
     });
 
-    response
-      .then(async (r) => {
-        if (r.ok) {
-          // pour récupérer les données que la requête a renvoyé
-          const data = await r.json();
-          goto(`/salon/${data.gameId}`);
-        }
-      })
-      .catch((err) => {
-        // Traiter le cas d'erreur
+    if (!valueInputCreateWaitingRoomGame) {
+      console.error("No ruleset selected");
+      return;
+    }
+
+    try {
+      console.log("Making API request to /api/games/");
+      const response = await fetch("/api/games/", {
+        method: "POST",
+        body: JSON.stringify({ rulesetId: valueInputCreateWaitingRoomGame }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
+      console.log("API response status:", response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("API response data:", data);
+        handleCloseCreateWaitingRoomGameModal(); // Close the modal before navigating
+        goto(`/salon/${data.gameId}`);
+      } else {
+        const error = await response.json();
+        console.error("Error creating waiting room:", error);
+        // TODO: Show user-friendly error message
+      }
+    } catch (err) {
+      console.error("Network error creating waiting room:", err);
+      // TODO: Show user-friendly error message
+    }
   };
 </script>
 
