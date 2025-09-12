@@ -14,7 +14,8 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
     return json({ error: "Paramètres manquants" }, { status: 400 })
   }
 
-  const decks: DeckType[] = await getDecksForGame(rulesetId, userId ?? undefined, minSizeDeck ?? undefined, maxSizeDeck ?? undefined);
+  // const decks: DeckType[] = await getDecksForGame(rulesetId, userId ?? undefined, minSizeDeck ?? undefined, maxSizeDeck ?? undefined);
+  const decks: DeckType[] = await getDecksForGame(rulesetId, userId ?? undefined);
 
 
   return json({ decks }, { status: 200 });
