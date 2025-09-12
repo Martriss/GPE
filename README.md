@@ -1,6 +1,6 @@
-# Multiplayer Card Game
+# Grimoire Infini
 
-A real-time multiplayer card game built with SvelteKit, Three.js, and Firebase.
+A magical real-time multiplayer card game built with SvelteKit, Three.js, and Firebase.
 
 ## Features
 
@@ -27,8 +27,8 @@ A real-time multiplayer card game built with SvelteKit, Three.js, and Firebase.
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd group-1050518
+git clone https://github.com/Martriss/GPE.git
+cd GPE
 
 # Install dependencies
 cd front
@@ -42,7 +42,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
+Open [http://localhost:5173](http://localhost:5173) to play Grimoire Infini.
 
 ### Build
 

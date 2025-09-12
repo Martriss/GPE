@@ -20,6 +20,7 @@
             userId={data.userId}
             isHost={data.isHost}
             ruleset={data.room.ruleset}
+            decks={data.room.decks}
         />
     {:else}
         <div class="error-container">

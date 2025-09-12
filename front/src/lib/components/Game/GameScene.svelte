@@ -7,16 +7,23 @@
         userId?: string;
         isHost?: boolean;
         ruleset?: any;
+        decks?: any[];
     }
 
-    let { roomId, userId, isHost = false, ruleset }: GameSceneProps = $props();
+    let {
+        roomId,
+        userId,
+        isHost = false,
+        ruleset,
+        decks,
+    }: GameSceneProps = $props();
 
     let container: HTMLDivElement;
     let sceneManager: SceneManager | null = null;
 
     onMount(() => {
         if (container) {
-            sceneManager = new SceneManager(container, ruleset);
+            sceneManager = new SceneManager(container, ruleset, decks);
 
             // Initialize multiplayer if room and user info are provided
             if (roomId && userId) {

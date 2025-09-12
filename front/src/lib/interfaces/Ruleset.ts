@@ -124,4 +124,5 @@ export interface ZoneConfig {
 export interface GameConfig {
   zones: ZoneConfig[];
   players: string[]; // Liste des clés de joueurs
+  cardData?: any[]; // Données des cartes Firebase optionnelles
 }

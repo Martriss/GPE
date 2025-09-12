@@ -2,9 +2,9 @@ import * as THREE from "three";
 
 // Type definition for the drop event callback
 export type CardDropCallback = (
-  card: Card, 
-  worldPosition: THREE.Vector3, 
-  dragStartPosition: THREE.Vector3
+  card: Card,
+  worldPosition: THREE.Vector3,
+  dragStartPosition: THREE.Vector3,
 ) => void;
 
 export class Card {
@@ -36,7 +36,8 @@ export class Card {
     frontTexture: string = "",
     backTexture: string = "",
     camera: THREE.Camera,
-    id?: string
+    id?: string,
+    cardData?: any,
   ) {
     this.camera = camera;
     this.id = id || Math.random().toString(36).substr(2, 9);
@@ -45,14 +46,21 @@ export class Card {
     // Create card geometry
     const geometry = new THREE.BoxGeometry(width, height, thickness);
 
-    // Load textures
+    // Load textures with CORS support for external images
     const textureLoader = new THREE.TextureLoader();
+    textureLoader.setCrossOrigin("anonymous");
     const defaultFrontMaterial = new THREE.MeshBasicMaterial({
       color: 0xf0f0f0,
     });
     const defaultBackMaterial = new THREE.MeshBasicMaterial({
       color: 0x2080ff,
     });
+
+    // Use Firebase card data if available
+    const finalFrontTexture = cardData?.front?.imageUrl || frontTexture;
+    const finalBackTexture =
+      backTexture ||
+      "https://static.wikia.nocookie.net/mtgsalvation_gamepedia/images/f/f8/Magic_card_back.jpg";
 
     // Create materials array for the cube
     const materials = [
@@ -65,18 +73,32 @@ export class Card {
     ];
 
     // If textures are provided, load them
-    if (frontTexture) {
-      textureLoader.load(frontTexture, (texture) => {
-        materials[4] = new THREE.MeshBasicMaterial({ map: texture });
-        this.card.material = materials;
-      });
+    if (finalFrontTexture) {
+      textureLoader.load(
+        finalFrontTexture,
+        (texture) => {
+          materials[4] = new THREE.MeshBasicMaterial({ map: texture });
+          this.card.material = materials;
+        },
+        undefined,
+        (error) => {
+          console.error("Error loading texture:", error);
+        },
+      );
     }
 
-    if (backTexture) {
-      textureLoader.load(backTexture, (texture) => {
-        materials[5] = new THREE.MeshBasicMaterial({ map: texture });
-        this.card.material = materials;
-      });
+    if (finalBackTexture) {
+      textureLoader.load(
+        finalBackTexture,
+        (texture) => {
+          materials[5] = new THREE.MeshBasicMaterial({ map: texture });
+          this.card.material = materials;
+        },
+        undefined,
+        (error) => {
+          console.error("Error loading back texture:", error);
+        },
+      );
     }
 
     // Create the card mesh
@@ -204,7 +226,7 @@ export class Card {
     this.bringToFront();
     this.isDragging = true;
     document.body.style.cursor = "grabbing";
-    
+
     // Store the starting position for reference when dropped
     this.dragStartPosition.copy(this.mesh.position);
   }
@@ -224,15 +246,19 @@ export class Card {
     if (this.isDragging) {
       this.isDragging = false;
       document.body.style.cursor = "auto";
-      
+
       // If we have a callback registered, call it with the current world position
       if (this.onDropCallback) {
         // Get the world position by combining the current position with parent transforms
         const worldPosition = new THREE.Vector3();
         this.mesh.getWorldPosition(worldPosition);
-        
+
         // Execute the callback
-        this.onDropCallback(this, worldPosition, this.dragStartPosition.clone());
+        this.onDropCallback(
+          this,
+          worldPosition,
+          this.dragStartPosition.clone(),
+        );
       }
     }
   }
@@ -294,11 +320,11 @@ export class Card {
 
   /**
    * Adjusts the card's position in the 3D scene to ensure it appears in front of other cards.
-   * 
+   *
    * This method calculates the maximum `z` position among sibling objects in the scene
    * and sets the card's `z` position slightly higher. It also updates the `dragPlane.constant`
    * to ensure the new position persists during future interactions.
-   * 
+   *
    * Side effects:
    * - Modifies the card's `z` position.
    * - Updates the `dragPlane.constant` to match the new `z` position.
@@ -323,21 +349,21 @@ export class Card {
     // Ensure the Z position persists in future interactions
     this.dragPlane.constant = this.mesh.position.z;
   }
-  
+
   /**
    * Set callback to be called when card is dropped after dragging
    */
   public setDropCallback(callback: CardDropCallback): void {
     this.onDropCallback = callback;
   }
-  
+
   /**
    * Check if the card is currently being dragged
    */
   public isDraggingCard(): boolean {
     return this.isDragging;
   }
-  
+
   /**
    * Get the card's current world position
    */
@@ -346,14 +372,14 @@ export class Card {
     this.mesh.getWorldPosition(position);
     return position;
   }
-  
+
   /**
    * Get the card's unique ID
    */
   public getId(): string {
     return this.id;
   }
-  
+
   /**
    * Check if the card is currently flipped (showing back face)
    */

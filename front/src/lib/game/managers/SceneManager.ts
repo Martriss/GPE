@@ -18,7 +18,7 @@ export class SceneManager {
   private multiplayerController: MultiplayerController | null = null;
   private gameConfig: GameConfig | null = null;
 
-  constructor(container?: HTMLElement, rulesetData?: any) {
+  constructor(container?: HTMLElement, rulesetData?: any, decks?: any[]) {
     this.container = container || null;
     this.scene = new Scene();
     this.camera = new Camera();
@@ -27,7 +27,7 @@ export class SceneManager {
 
     // Initialize the scene
     if (rulesetData && rulesetData.zones && rulesetData.zones.length > 0) {
-      this.initializeWithRulesetData(rulesetData);
+      this.initializeWithRulesetData(rulesetData, decks);
     } else {
       this.initializeWithDefaultConfig();
     }
@@ -39,10 +39,52 @@ export class SceneManager {
   /**
    * Initialize scene with ruleset data directly from lobby
    */
-  private initializeWithRulesetData(rulesetData: any): void {
+  private initializeWithRulesetData(rulesetData: any, decks?: any[]): void {
     try {
-      // Convert ruleset data to GameConfig
+      // Convert ruleset data to GameConfig with deck cards
       this.gameConfig = ConfigLoader.loadFromRulesetData(rulesetData);
+
+      // Add card data from decks if available
+      if (decks && decks.length > 0) {
+        const allCards: any[] = [];
+        decks.forEach((deck) => {
+          if (deck.cards && Array.isArray(deck.cards)) {
+            allCards.push(...deck.cards);
+          }
+        });
+        this.gameConfig.cardData = allCards;
+      } else {
+        // Add test cards with real MTG images for testing
+        this.gameConfig.cardData = [
+          {
+            name: "Lightning Bolt",
+            imageUrl:
+              "https://cards.scryfall.io/normal/front/f/2/f29ba16f-c8fb-42fe-aabf-87089cb214a7.jpg?1655641518",
+            front: {
+              imageUrl:
+                "https://cards.scryfall.io/normal/front/f/2/f29ba16f-c8fb-42fe-aabf-87089cb214a7.jpg?1655641518",
+            },
+          },
+          {
+            name: "Black Lotus",
+            imageUrl:
+              "https://cards.scryfall.io/normal/front/b/d/bd8fa327-dd41-4737-8f19-2cf5eb1f7cdd.jpg?1614638838",
+            front: {
+              imageUrl:
+                "https://cards.scryfall.io/normal/front/b/d/bd8fa327-dd41-4737-8f19-2cf5eb1f7cdd.jpg?1614638838",
+            },
+          },
+          {
+            name: "Sol Ring",
+            imageUrl:
+              "https://cards.scryfall.io/normal/front/1/9/199cde21-5bc3-49cd-acd4-bae3af6e5881.jpg?1654118835",
+            front: {
+              imageUrl:
+                "https://cards.scryfall.io/normal/front/1/9/199cde21-5bc3-49cd-acd4-bae3af6e5881.jpg?1654118835",
+            },
+          },
+        ];
+      }
 
       // Validate configuration
       if (
@@ -120,7 +162,16 @@ export class SceneManager {
     this.cards = Array.from(
       { length: 5 },
       (_, index) =>
-        new Card(1, 1.4, 0.01, "", "", this.camera.camera, `card_${index}`),
+        new Card(
+          1,
+          1.4,
+          0.01,
+          "",
+          "",
+          this.camera.camera,
+          `card_${index}`,
+          null,
+        ),
     );
 
     // Add cards to main area
@@ -193,13 +244,57 @@ export class SceneManager {
       return total + (zone.initializationCards?.count || 0);
     }, 0);
 
-    // Create cards with deterministic IDs
+    // Create cards with deterministic IDs and real data if available
     const cardCount = Math.max(totalCardsNeeded, 15); // Minimum 15 cards
-    this.cards = Array.from(
-      { length: cardCount },
-      (_, index) =>
-        new Card(1, 1.4, 0.01, "", "", this.camera.camera, `card_${index}`),
-    );
+    const cardData = this.gameConfig?.cardData || [];
+
+    // Force test cards to center if we have card data but no zones with cards
+    if (cardData.length > 0) {
+      const battlefield =
+        this.findGameAreaByName("battlefield") || this.gameAreas[0];
+
+      if (battlefield) {
+        // Create only the number of cards we have data for
+        const testCardCount = Math.min(cardData.length, cardCount);
+        this.cards = Array.from({ length: testCardCount }, (_, index) => {
+          const realCardData = cardData[index];
+          const card = new Card(
+            1,
+            1.4,
+            0.01,
+            "",
+            "",
+            this.camera.camera,
+            `test_card_${index}`,
+            realCardData,
+          );
+
+          // Place immediately in center
+          const posX = (index - testCardCount / 2) * 2.5;
+          battlefield.addCard(card, posX, 0);
+
+          return card;
+        });
+
+        // Exit early, we've placed our test cards
+        return;
+      }
+    }
+
+    // Normal card distribution (when no test cards)
+    this.cards = Array.from({ length: cardCount }, (_, index) => {
+      const realCardData = cardData[index] || null;
+      return new Card(
+        1,
+        1.4,
+        0.01,
+        "",
+        "",
+        this.camera.camera,
+        `card_${index}`,
+        realCardData,
+      );
+    });
 
     // Distribute cards among the areas
     let cardIndex = 0;
@@ -225,7 +320,6 @@ export class SceneManager {
           // Stack on top of each other
           posY = i * 0.02;
         }
-        // For 'free' mode, just place at center
 
         gameArea.addCard(card, posX, posY);
       }
@@ -237,10 +331,11 @@ export class SceneManager {
         this.findGameAreaByName("battlefield") || this.gameAreas[0];
       if (mainArea) {
         while (cardIndex < this.cards.length) {
-          const card = this.cards[cardIndex++];
+          const card = this.cards[cardIndex];
           const posX = (cardIndex % 5) * 2 - 4;
           const posY = Math.floor(cardIndex / 5) * 0.5;
           mainArea.addCard(card, posX, posY);
+          cardIndex++;
         }
       }
     }
